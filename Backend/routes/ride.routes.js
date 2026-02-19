@@ -18,4 +18,11 @@ router.get('/get-fare',
   rideController.getFare
 )
 
+router.post('/confirm',
+  authMiddleware.authCaptain,
+  body('rideId').isMongoId().withMessage('Invalid Message id'),
+  // body('otp').isString().isLength({min:6,max:6}.withMessage('Invalid Otp'))
+  rideController.confirmRide
+)
+
 module.exports = router;

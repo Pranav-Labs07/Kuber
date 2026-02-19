@@ -1,26 +1,18 @@
-import react from "react";
-import React,{useState, useRef } from 'react';
+import react from 'react';
 import rd from "../assets/rdm.jpg"
 import { Link } from 'react-router-dom';
 
-
-
-const ConfirmRidePopUp=(props)=>{
-  const[otp,setOtp]=useState('')
-const submitHandler=(e)=>{
-  e.preventDefault()
-
-}
-
+const FinishRide=(props)=>{
   return(
-    <div >
+    <div>
+      <div >
       <h5 className="p-1 text-center w-[93%] absolute top-0"
       onClick={()=>{
-            props.setRidePopPanel(false)
+            props.setFinishRidePanel(false)
              }}>
       <i className="text-3xl ri-arrow-drop-down-line text-gray-500"></i></h5>
-        <h3 className='text-2xl font-semibold mb-5' >Confirm this ride to Start </h3>
-        <div className='flex items-center justify-between mt-4 p-3 bg-yellow-300 rounded-lg'>
+        <h3 className='text-2xl font-semibold mb-5' >Finish This Ride</h3>
+        <div className='flex items-center justify-between mt-4 p-4 border-4 border-yellow-300 rounded-lg'>
           <div className='flex items-center gap-3'>
             <img className='h-15 rounded-full object-cover w-15' src={rd}/>
             <h2 className='text-lg font-medium'>Akash Patil </h2>
@@ -54,23 +46,18 @@ const submitHandler=(e)=>{
   </div>
  
   <div className='mt-6 w-full '>
-    <form onSubmit={(e)=>{
-      submitHandler(e)
-    }}>
-    <input value={otp} onChange={(e)=>setOtp(e.target.value)} className='bg-[#eee] px-6 py-4  font-mono text-lg rounded-lg w-full mt-3'  type='text' placeholder='Enter OTP' ></input>
-      <Link to='/captain-riding' onClick={()=>{
-      
-      }} className='w-full bg-green-600 flex  justify-center text-white font-semibold rounded-lg p-2'>Confirm</Link>
     
-    <button onClick={()=>{
-      props.setConfirmRidePopPanel(false)
-      props.setRidePopPanel(false)}} className='w-full mt-1 bg-red-600 text-white font-semibold  rounded-lg p-2'>Cancel</button>
-    </form>
+      <Link to='/captain-home' onClick={()=>{
+      
+      }} className='w-full bg-green-600 flex  justify-center text-white text-lg font-semibold rounded-lg p-2'>Finish Ride</Link>
+    
+    
     
     </div>  
      
       </div>
         </div>
+        </div>
   )
 }
-export default ConfirmRidePopUp;
+export default FinishRide

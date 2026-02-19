@@ -1,32 +1,18 @@
-import React, { useState } from "react";
-
-const LocationSearchPanel = (props) => {
-  const [selectedLocation, setSelectedLocation] = useState(null);
-
-  const location = [
-    "72c, Near Kapoor's cafe, Sheryians Coding School, pune",
-    "44a, Near Kapoor's cafe, Sheryians Coding School, pune",
-    "24a, Near Kapoor's cafe, Sheryians Coding School, pune",
-    "24c, Near Kapoor's cafe, Sheryians Coding School, pune",
-    "18c, Near Kapoor's cafe, Sheryians Coding School, pune"
-  ];
-
+import React from "react";
+const LocationSearchPanel = ({ suggestions = [], onSelectSuggestion, setPanelOpen }) => {
   return (
     <div>
-      {location.map((elem, index) => (
+      {suggestions.length === 0 && (
+        <div className="text-gray-400 text-center py-4">No suggestions</div>
+      )}
+      {suggestions.map((elem, index) => (
         <div
           key={index}
           onClick={() => {
-            setSelectedLocation(elem);
-            props.setVehiclePanelOpen(true);
+            onSelectSuggestion(elem);
+            setPanelOpen(true);
           }}
-          className={`flex gap-4 border-2 p-3 rounded-xl items-center my-2 justify-start cursor-pointer
-            ${
-              selectedLocation === elem
-                ? "border-black bg-gray-100"
-                : "border-gray-300"
-            }
-          `}
+          className={`flex gap-4 border-2 p-3 rounded-xl items-center my-2 justify-start cursor-pointer border-gray-300 hover:border-black hover:bg-gray-100`}
         >
           <h2 className="bg-[#eee] h-8 flex items-center justify-center w-12 rounded-full">
             <i className="ri-map-pin-fill"></i>

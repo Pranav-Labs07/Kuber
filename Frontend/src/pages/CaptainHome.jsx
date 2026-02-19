@@ -1,4 +1,4 @@
-import React,{useState, useRef } from 'react';
+import React,{useState, useRef, useEffect , useContext   } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { Link } from 'react-router-dom';
@@ -8,13 +8,59 @@ import ConfirmRidePopUp from "../components/ConfirmRidePopUp"
 // import CaR from "../assets/uber-go.jpg"
 import Hl from '../assets/home-logo.jpg';
 import RidePopUp from "../components/RidePopUp";
-
+import {SocketContext} from "../context/SocketContext"
+import {CaptainDataContext} from "../context/CaptainContext"
 
 const CaptainHome=()=>{
-const [ridePopUpPanel,setRidePopUpPanel]=useState(true) 
+const [ridePopUpPanel,setRidePopUpPanel]=useState(false) 
 const [ConfirmRidePopupPanel,setConfirmRidePopupPanel]=useState(false) 
 const ridePopupPanelRef=useRef(null)
 const confirmRidePopupPanelRef=useRef(null)
+const [ride,setRide]=useState(null);
+const [confirmride,setConfirmride]=useState(null);
+
+const {socket} =useContext(SocketContext)
+const {captain} =useContext(CaptainDataContext)
+
+useEffect(() => {
+  if (socket && captain?._id) {
+    socket.emit('join', {
+      userId: captain._id,
+      userType: 'captain'
+    });
+    const intervalId = setInterval(() => {
+      if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log({userId:captain._id,
+          location:{
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+        }
+      })
+        socket.emit('update-location-captain', {
+        userId: captain._id,
+        location:{
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+        }
+        });
+      });
+      }
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+    }
+}, [socket, captain?._id]);
+useEffect(() => {
+  if (!socket) return;
+  const handleNewRide = (data) => {
+    setRide(data);
+    setRidePopUpPanel(true);
+    setConfirmRidePopupPanel(false);
+  };
+  socket.on('new-ride', handleNewRide);
+  return () => socket.off('new-ride', handleNewRide);
+}, [socket]);
 
  useGSAP(function () {
    if (ridePopUpPanel) {
@@ -59,11 +105,14 @@ return(
  </div>
 
   <div ref={ridePopupPanelRef}   className='fixed w-full z-10 bg-white bottom-0 px-3 py-10 pt-12 translate-y-full'>
-          <RidePopUp setRidePopupPanel={setRidePopUpPanel}
+          <RidePopUp 
+          ride={ride}
+          setRidePopupPanel={setRidePopUpPanel}
           setConfirmRidePopPanel={setConfirmRidePopupPanel} 
+          confirmride={confirmride}
           /></div>
 
-  <div ref={confirmRidePopupPanelRef}   className='fixed w-full z-10 bg-white bottom-0 px-3 py-10 pt-12 translate-y-full'>
+  <div ref={confirmRidePopupPanelRef}   className='fixed w-full h-screen  z-10 bg-white bottom-0 px-3 py-10 pt-12 translate-y-full'>
           <ConfirmRidePopUp setConfirmRidePopPanel={setConfirmRidePopupPanel}
           setRidePopPanel={setRidePopUpPanel}/>
         </div>

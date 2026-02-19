@@ -10,9 +10,14 @@ import UserProtectWrapper from "./pages/UserProtectWrapper";
 import UserLogout from './pages/UserLogout';
 import CaptainHome from './pages/CaptainHome';
 import CaptainProtectWrapper from "./pages/CaptainProtectWrapper";
-import LocationSearchPanel from '../src/components/LocationSearchPanel';
+// import LocationSearchPanel from '../src/components/LocationSearchPanel';
 import Riding from '../src/pages/Riding';
+import CaptainRiding from '../src/pages/CaptainRiding';
+// import React,{useState, useRef } from 'react';
+// import { useGSAP } from '@gsap/react';
 import CaptainDetails from "./components/CaptainDetails"
+import ('remixicon/fonts/remixicon.css');
+
 
 
 const App=() =>{
@@ -22,6 +27,7 @@ const App=() =>{
     <Route path='/login' element={<UserLogin/>}/>
     <Route path='/signup' element={<UserSignup/>}/>
     <Route path='/Riding' element={<Riding/>}/>
+    <Route path='/captain-riding' element={<CaptainRiding/>}/>
     <Route path='/captain-login' element={<CaptainLogin/> }/>
     <Route path='/captain-signup' element={<CaptainSignup/> }/>
     <Route path='/home' element={<UserProtectWrapper> <Home/> </UserProtectWrapper> }/>

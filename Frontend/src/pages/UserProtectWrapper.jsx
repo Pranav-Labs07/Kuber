@@ -24,7 +24,7 @@ const UserProtectWrapper = ({ children }) => {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.status === 200) {
-          setUser(response.data.user || response.data);
+          setUser(response.data  || response.data);
         }
       } catch (err) {
         console.error(err);
