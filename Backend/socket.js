@@ -15,8 +15,10 @@ function initializeSocket(server) {
 
     socket.on('join', async (data) => {
       const { userId, userType } = data;
-      if (userType == 'captain') {
+      if (userType === 'captain') {
         await captainModel.findByIdAndUpdate(userId, { socketId: socket.id });
+      } else if (userType === 'user') {
+        await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
       }
     });
 
@@ -33,7 +35,7 @@ function initializeSocket(server) {
           lng: location.lng
         }
       });
-      
+
     });
 
     socket.on('disconnect', () => {
@@ -41,7 +43,7 @@ function initializeSocket(server) {
     });
   });
 }
-const sendMessageToSocketId = (socketId, messageObject)=> {
+const sendMessageToSocketId = (socketId, messageObject) => {
   console.log(`Sending message to ${socketId}, messageObject`, messageObject)
   if (io) {
     // Use the event name from messageObject.event and send messageObject.data

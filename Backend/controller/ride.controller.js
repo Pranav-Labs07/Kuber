@@ -9,37 +9,38 @@ module.exports.createRide = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
-
   }
-  const { userId, pickup, destination, vehicleType } = req.body;
+  const { pickup, destination, vehicleType } = req.body;
   try {
+    // Step 1: create the ride
     const ride = await rideService.createRide({ user: req.user._id, pickup, destination, vehicleType });
-    res.status(201).json(ride);
 
-    const pickupCoordinates = await mapService.getAddressCoordinate(pickup);
-    console.log(pickupCoordinates);
+    // Step 2: get pickup coordinates (for finding nearby captains)
+    let pickupCoordinates;
+    try {
+      pickupCoordinates = await mapService.getAddressCoordinate(pickup);
+      console.log('Pickup coords:', pickupCoordinates);
+    } catch (geoErr) {
+      console.error('Could not geocode pickup (non-fatal):', geoErr.message);
+    }
 
-    const captainsInRadius = await mapService.getCaptainsInTheRadius(pickupCoordinates.lat, pickupCoordinates.lng, 2);
+    // Step 3: notify nearby captains via socket
+    if (pickupCoordinates) {
+      const captainsInRadius = await mapService.getCaptainsInTheRadius(pickupCoordinates.lat, pickupCoordinates.lng, 2);
+      const rideWithUser = await rideModel.findOne({ _id: ride._id }).populate('user');
+      captainsInRadius.forEach(captain => {
+        sendMessageToSocketId(captain.socketId, {
+          event: 'new-ride',
+          data: rideWithUser
+        });
+      });
+    }
 
-    ride.otp = "";
+    // Step 4: respond to client
+    return res.status(201).json(ride);
 
-    const rideWithUser = await rideModel.findOne({ _id: ride._id }).populate('user');
-
-    // Add userId and pickup location to the ride data sent to captain
-    const rideDataForCaptain = {
-      ...ride.toObject ? ride.toObject() : ride,
-      userId: req.user._id,
-      pickup,
-      destination
-    };
-
-    captainsInRadius.map(async captain => {
-      sendMessageToSocketId(captain.socketId, {
-        event: 'new-ride',
-        data: rideWithUser
-      })
-    })
   } catch (err) {
+    console.error('createRide error:', err);
     return res.status(500).json({ message: err.message });
   }
 }
@@ -65,24 +66,24 @@ module.exports.getFare = async (req, res) => {
 }
 
 module.exports.confirmRide = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-    const { rideId } = req.body;
-    try {
-        const ride = await rideService.confirmRide({ rideId, captain: req.captain });
-        sendMessageToSocketId(ride.user.socketId, {
-            event: 'ride-confirmed',
-            data: ride
-        })
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const { rideId } = req.body;
+  try {
+    const ride = await rideService.confirmRide({ rideId, captain: req.captain });
+    sendMessageToSocketId(ride.user.socketId, {
+      event: 'ride-confirmed',
+      data: ride
+    })
 
-        return res.status(200).json(ride);
-    } catch (err) {
+    return res.status(200).json(ride);
+  } catch (err) {
 
-        console.log(err);
-        return res.status(500).json({ message: err.message });
-    }
+    console.log(err);
+    return res.status(500).json({ message: err.message });
+  }
 }
 
 // module.exports.startRide = async (req, res) => {

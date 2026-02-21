@@ -1,12 +1,12 @@
 const crypto = require('crypto');
 const rideModel = require('../models/ride.model');
-const mapService =require("./maps.service")
+const mapService = require("./maps.service")
 
-async function getFare(pickup,destination){
-  if(!pickup || !destination){
+async function getFare(pickup, destination) {
+  if (!pickup || !destination) {
     throw new Error("pickup and destination are required");
   }
-  const distanceTime = await mapService.getDistanceTime(pickup,destination);
+  const distanceTime = await mapService.getDistanceTime(pickup, destination);
   const baseFare = { auto: 10, car: 20, moto: 5 };
   const perKmRate = { auto: 10, car: 15, moto: 8 };
   const perMinRate = { auto: 1, car: 2, moto: 0.5 };
@@ -28,9 +28,9 @@ async function getFare(pickup,destination){
   return fare;
 
 
-  }
+}
 
-  module.exports.getFare = getFare;
+module.exports.getFare = getFare;
 
 function getOtp(num) {
   function generateOtp(num) {
@@ -48,41 +48,36 @@ function getOtp(num) {
   return generateOtp(num);
 }
 
-module.exports.createRide =async({
-  user,pickup,destination,vehicleType
-  }) =>{
-  if(!user || !pickup || !destination || !vehicleType){
+module.exports.createRide = async ({
+  user, pickup, destination, vehicleType
+}) => {
+  if (!user || !pickup || !destination || !vehicleType) {
     throw new Error('All fields are required');
   }
-  const fare = await getFare(pickup,destination);
-  console.log(fare)
-  const ride = rideModel.create({
+  const fare = await getFare(pickup, destination);
+  console.log(fare);
+  const ride = await rideModel.create({
     user,
     pickup,
     destination,
-    otp:getOtp(6),
-    fare:fare[vehicleType]
-  })
+    otp: getOtp(6),
+    fare: fare[vehicleType]
+  });
   return ride;
-  
 }
 
-module.exports.confirmRide = async ({ rideId }) => {
+module.exports.confirmRide = async ({ rideId, captain }) => {
   if (!rideId) {
     throw new Error('Ride id is Required');
   }
-  await rideModel.findOneAndUpdate({
-    _id: rideId
-  }, {
-    status: 'accepted',
-    captain: 'captain._id'
-  })
-  const ride = await rideModel.findOne({
-    _id: ride
-  }).populate('user');
+  await rideModel.findOneAndUpdate(
+    { _id: rideId },
+    { status: 'accepted', captain: captain._id }
+  );
+  const ride = await rideModel.findOne({ _id: rideId }).populate('user').populate('captain');
 
   if (!ride) {
-    throw new error('Ride not Found');
+    throw new Error('Ride not Found');
   }
 
   return ride;
