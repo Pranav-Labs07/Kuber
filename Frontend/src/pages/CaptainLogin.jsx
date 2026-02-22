@@ -8,7 +8,7 @@ import Cl from '../assets/captain-login.jpg';
 const CaptainLogin= () => {
   const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const {captain,setCaptain} =React.useContext(CaptainDataContext)
+    const {captain,setCaptain} = React.useContext(CaptainDataContext)
     const navigate=useNavigate( )
 
     const SubmitHandler = async(e)=>{
@@ -25,7 +25,7 @@ const CaptainLogin= () => {
      if (response.status === 200){
       const data =response.data
       setCaptain(data.captain)
-      localStorage.setItem('token',data.token)
+      localStorage.setItem('captain-token',data.token)
       navigate('/captain-home')
     }
   

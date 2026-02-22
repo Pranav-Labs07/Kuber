@@ -1,4 +1,4 @@
-import React, { useState, useRef , useContext , useEffect} from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -11,8 +11,8 @@ import Hb from "../assets/home-bg.jpg";
 import ConfirmRide from "../components/ConfirmRide";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
-import {SocketContext} from "../context/SocketContext";
-import {UserDataContext} from "../context/UserContext";
+import { SocketContext } from "../context/SocketContext";
+import { UserDataContext } from "../context/UserContext";
 // import vehiclepanel from '../components/VehiclePanel'
 
 const Home = () => {
@@ -33,21 +33,49 @@ const Home = () => {
   const [vehicleFound, setVehicleFound] = useState(false);
   const [waitingForDriver, setWaitingForDriver] = useState(false);
   const [vehicleType, setVehicleType] = useState(null);
+<<<<<<< HEAD
   const [fare,getFare]=useState({})
   const {socket} = useContext(SocketContext);
   const {user}=useContext(UserDataContext);
  
   useEffect(()=>{
-    if (user && user._id) {
+    if (socket && user && user._id) {
       console.log(user)
       console.log('join', { userType: 'user', userId: user._id })
-      // socket.emit('join', { userType: 'user', userId: user._id }) // if needed
+      socket.emit('join', { userType: 'user', userId: user._id })
     }
-    socket.on('ride-confirmed',ride=>{
+  }, [user, socket])
+
+  useEffect(() => {
+    if (!socket) return;
+    
+    socket.on('ride-confirmed', (ride) => {
       setVehicleFound(false)
       setWaitingForDriver(true)
     })
+
+    return () => {
+      socket.off('ride-confirmed')
+    }
+  }, [socket])
+=======
+  const [fare, getFare] = useState({})
+  const [confirmedRide, setConfirmedRide] = useState(null)
+  const { socket } = useContext(SocketContext);
+  const { user } = useContext(UserDataContext);
+
+  useEffect(() => {
+    if (user && user._id) {
+      socket.emit('join', { userType: 'user', userId: user._id })
+    }
+    socket.on('ride-confirmed', ride => {
+      setConfirmedRide(ride)
+      setVehicleFound(false)
+      setWaitingForDriver(true)
+    })
+    return () => socket.off('ride-confirmed')
   }, [user])
+>>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
 
 
   const submitHandler = (e) => {
@@ -153,15 +181,17 @@ const Home = () => {
     [waitingForDriver],
   );
 
-  async function findTrip(){
+  async function findTrip() {
     setVehiclepanel(true)
     setPanelOpen(false)
     try {
       console.log('Sending to backend:', { pickup, destination });
+      const currentToken = localStorage.getItem('token');
+      console.log('Using token for get-fare:', currentToken);
       const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/rides/get-fare`, {
         params: { pickup, destination },
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${currentToken}`
         }
       });
       getFare(response.data);
@@ -172,17 +202,36 @@ const Home = () => {
     }
   }
 
+<<<<<<< HEAD
   async function createRide(){
-    const response= await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`,{
+    try {
+      const currentToken = localStorage.getItem('token');
+      const response= await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`,{
+        pickup,
+        destination,
+        vehicleType
+      },{
+        headers:{ 
+        Authorization:`Bearer ${currentToken}`
+      }
+      })
+      console.log('Ride created successfully:', response.data)
+    } catch (err) {
+      console.error('Error creating ride:', err.response?.data || err.message);
+    }
+=======
+  async function createRide() {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`, {
       pickup,
       destination,
       vehicleType
-    },{
-      headers:{ 
-      Authorization:`Bearer ${localStorage.getItem('token')}`
-    }
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
     })
     console.log(response.data)
+>>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
   }
 
   return (
@@ -301,21 +350,28 @@ const Home = () => {
           ref={vehicleFoundRef}
           className="fixed w-full z-10 translate-y-full bg-white bottom-0 px-3 py-10 pt-12"
         >
-          <LookingForDriver 
-          
-          pickup={pickup}
-          destination={destination}
-          createRide={createRide}
-          fare={fare}
-          VehicleType={vehicleType}
-          setVehicleFound = {setVehicleFound} />
+          <LookingForDriver
+            pickup={pickup}
+            destination={destination}
+            createRide={createRide}
+            fare={fare}
+            VehicleType={vehicleType}
+            setVehicleFound={setVehicleFound}
+            setVehiclePanelOpen={setVehiclepanel} />
         </div>
 
         <div
           ref={waitingForDriverRef}
           className="fixed w-full z-10  bg-white bottom-0 px-3 py-10 pt-12"
         >
-          <WaitingForDriver waitingForDriver={WaitingForDriver} />
+          <WaitingForDriver
+            ride={confirmedRide}
+            pickup={pickup}
+            destination={destination}
+            fare={fare?.[vehicleType]}
+            waitingForDriver={waitingForDriver}
+            setWaitingForDriver={setWaitingForDriver}
+          />
         </div>
       </div>
     </div>

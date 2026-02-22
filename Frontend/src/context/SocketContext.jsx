@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 
 export const SocketContext = createContext();
@@ -8,15 +8,22 @@ export const useSocket = () => useContext(SocketContext);
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:4000";
 
 const SocketProvider = ({ children }) => {
-  const [socket, setSocket] = useState(null);
+  const socketRef = useRef(null);
 
   useEffect(() => {
+    // Only create socket once
+    if (socketRef.current) return;
+
     const socketInstance = io(SOCKET_URL, {
       transports: ["websocket"],
       autoConnect: true,
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
     });
 
-    setSocket(socketInstance);
+    socketRef.current = socketInstance;
 
     socketInstance.on("connect", () => {
       console.log("Socket connected:", socketInstance.id);
@@ -24,14 +31,20 @@ const SocketProvider = ({ children }) => {
     socketInstance.on("disconnect", () => {
       console.log("Socket disconnected");
     });
+    socketInstance.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
+    });
 
     return () => {
-      socketInstance.disconnect();
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket: socketRef.current }}>
       {children}
     </SocketContext.Provider>
   );

@@ -41,10 +41,10 @@ return (
          
 
          </div>
-         <button onClick={()=>{
-          props.setVehicleFound(true)
-          props.setConfirmRidePanel(false)
-          props.createRide(true)
+         <button onClick={() => {
+          props.setVehicleFound(true);
+          props.setConfirmRidePanel(false);
+          props.createRide();
          }} className='w-full bg-green-600 text-white font-semibold  rounded-lg p-2'>Confirm</button>
 
        </div>
