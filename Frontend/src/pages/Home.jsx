@@ -38,16 +38,25 @@ const Home = () => {
   const {user}=useContext(UserDataContext);
  
   useEffect(()=>{
-    if (user && user._id) {
+    if (socket && user && user._id) {
       console.log(user)
       console.log('join', { userType: 'user', userId: user._id })
-      // socket.emit('join', { userType: 'user', userId: user._id }) // if needed
+      socket.emit('join', { userType: 'user', userId: user._id })
     }
-    socket.on('ride-confirmed',ride=>{
+  }, [user, socket])
+
+  useEffect(() => {
+    if (!socket) return;
+    
+    socket.on('ride-confirmed', (ride) => {
       setVehicleFound(false)
       setWaitingForDriver(true)
     })
-  }, [user])
+
+    return () => {
+      socket.off('ride-confirmed')
+    }
+  }, [socket])
 
 
   const submitHandler = (e) => {
@@ -158,10 +167,12 @@ const Home = () => {
     setPanelOpen(false)
     try {
       console.log('Sending to backend:', { pickup, destination });
+      const currentToken = localStorage.getItem('token');
+      console.log('Using token for get-fare:', currentToken);
       const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/rides/get-fare`, {
         params: { pickup, destination },
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${currentToken}`
         }
       });
       getFare(response.data);
@@ -173,16 +184,21 @@ const Home = () => {
   }
 
   async function createRide(){
-    const response= await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`,{
-      pickup,
-      destination,
-      vehicleType
-    },{
-      headers:{ 
-      Authorization:`Bearer ${localStorage.getItem('token')}`
+    try {
+      const currentToken = localStorage.getItem('token');
+      const response= await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`,{
+        pickup,
+        destination,
+        vehicleType
+      },{
+        headers:{ 
+        Authorization:`Bearer ${currentToken}`
+      }
+      })
+      console.log('Ride created successfully:', response.data)
+    } catch (err) {
+      console.error('Error creating ride:', err.response?.data || err.message);
     }
-    })
-    console.log(response.data)
   }
 
   return (

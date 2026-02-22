@@ -6,31 +6,42 @@ async function getFare(pickup,destination){
   if(!pickup || !destination){
     throw new Error("pickup and destination are required");
   }
-  const distanceTime = await mapService.getDistanceTime(pickup,destination);
-  const baseFare = { auto: 10, car: 20, moto: 5 };
-  const perKmRate = { auto: 10, car: 15, moto: 8 };
-  const perMinRate = { auto: 1, car: 2, moto: 0.5 };
-  console.log(distanceTime);
+  try {
+    const distanceTime = await mapService.getDistanceTime(pickup,destination);
+    const baseFare = { auto: 10, car: 20, moto: 5 };
+    const perKmRate = { auto: 10, car: 15, moto: 8 };
+    const perMinRate = { auto: 1, car: 2, moto: 0.5 };
+    console.log(distanceTime);
 
-  // Ensure distance is in kilometers
-  const distanceInKm = distanceTime.distance / 1000;
-  const durationInMin = distanceTime.duration / 60;
-  // Calculate hours and minutes
-  const durationHours = Math.floor(durationInMin / 60);
-  const durationMinutes = Math.round(durationInMin % 60);
-  const fare = {
-    auto: Math.round((baseFare.auto + distanceInKm * perKmRate.auto + durationInMin * perMinRate.auto) * 100) / 100,
-    car: Math.round((baseFare.car + distanceInKm * perKmRate.car + durationInMin * perMinRate.car) * 100) / 100,
-    moto: Math.round((baseFare.moto + distanceInKm * perKmRate.moto + durationInMin * perMinRate.moto) * 100) / 100,
-    distance: `${distanceInKm.toFixed(2)} km`,
-    duration: durationHours > 0 ? `${durationHours} hr ${durationMinutes} min` : `${durationMinutes} min`
-  };
-  return fare;
-
-
+    // Ensure distance is in kilometers
+    const distanceInKm = distanceTime.distance / 1000;
+    const durationInMin = distanceTime.duration / 60;
+    // Calculate hours and minutes
+    const durationHours = Math.floor(durationInMin / 60);
+    const durationMinutes = Math.round(durationInMin % 60);
+    const fare = {
+      auto: Math.round((baseFare.auto + distanceInKm * perKmRate.auto + durationInMin * perMinRate.auto) * 100) / 100,
+      car: Math.round((baseFare.car + distanceInKm * perKmRate.car + durationInMin * perMinRate.car) * 100) / 100,
+      moto: Math.round((baseFare.moto + distanceInKm * perKmRate.moto + durationInMin * perMinRate.moto) * 100) / 100,
+      distance: `${distanceInKm.toFixed(2)} km`,
+      duration: durationHours > 0 ? `${durationHours} hr ${durationMinutes} min` : `${durationMinutes} min`
+    };
+    return fare;
+  } catch(mapError) {
+    console.error('Error fetching distance from maps service:', mapError.message);
+    // Return default fare if maps API fails
+    const baseFare = { auto: 10, car: 20, moto: 5 };
+    return {
+      auto: baseFare.auto,
+      car: baseFare.car,
+      moto: baseFare.moto,
+      distance: 'N/A',
+      duration: 'N/A'
+    };
   }
+}
 
-  module.exports.getFare = getFare;
+module.exports.getFare = getFare;
 
 function getOtp(num) {
   function generateOtp(num) {
@@ -51,23 +62,29 @@ function getOtp(num) {
 module.exports.createRide =async({
   user,pickup,destination,vehicleType
   }) =>{
-  if(!user || !pickup || !destination || !vehicleType){
-    throw new Error('All fields are required');
+  try {
+    if(!user || !pickup || !destination || !vehicleType){
+      throw new Error('All fields are required');
+    }
+    console.log('Creating ride with:', {user, pickup, destination, vehicleType});
+    const fare = await getFare(pickup,destination);
+    console.log('Fare calculated:', fare);
+    const ride = await rideModel.create({
+      user,
+      pickup,
+      destination,
+      otp:getOtp(6),
+      fare:fare[vehicleType]
+    });
+    console.log('Ride saved to DB:', ride);
+    return ride;
+  } catch(err) {
+    console.error('Error in createRide service:', err);
+    throw err;
   }
-  const fare = await getFare(pickup,destination);
-  console.log(fare)
-  const ride = rideModel.create({
-    user,
-    pickup,
-    destination,
-    otp:getOtp(6),
-    fare:fare[vehicleType]
-  })
-  return ride;
-  
 }
 
-module.exports.confirmRide = async ({ rideId }) => {
+module.exports.confirmRide = async ({ rideId, captain }) => {
   if (!rideId) {
     throw new Error('Ride id is Required');
   }
@@ -75,14 +92,14 @@ module.exports.confirmRide = async ({ rideId }) => {
     _id: rideId
   }, {
     status: 'accepted',
-    captain: 'captain._id'
+    captain: captain._id
   })
   const ride = await rideModel.findOne({
-    _id: ride
+    _id: rideId
   }).populate('user');
 
   if (!ride) {
-    throw new error('Ride not Found');
+    throw new Error('Ride not Found');
   }
 
   return ride;

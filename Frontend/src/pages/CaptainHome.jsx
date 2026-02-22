@@ -18,6 +18,7 @@ const ridePopupPanelRef=useRef(null)
 const confirmRidePopupPanelRef=useRef(null)
 const [ride,setRide]=useState(null);
 const [confirmride,setConfirmride]=useState(null);
+const [rideConfirmed, setRideConfirmed] = useState(null);
 
 const {socket} =useContext(SocketContext)
 const {captain} =useContext(CaptainDataContext)
@@ -28,28 +29,28 @@ useEffect(() => {
       userId: captain._id,
       userType: 'captain'
     });
-    const intervalId = setInterval(() => {
+    
+    const updateLocation = () => {
       if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log({userId:captain._id,
-          location:{
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-        }
-      })
-        socket.emit('update-location-captain', {
-        userId: captain._id,
-        location:{
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-        }
+        navigator.geolocation.getCurrentPosition((position) => {
+          socket.emit('update-location-captain', {
+            userId: captain._id,
+            location: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            }
+          });
         });
-      });
       }
-    }, 10000);
+    };
+    
+    // Initial location update
+    updateLocation();
+    
+    const intervalId = setInterval(updateLocation, 10000);
 
     return () => clearInterval(intervalId);
-    }
+  }
 }, [socket, captain?._id]);
 useEffect(() => {
   if (!socket) return;
@@ -58,8 +59,17 @@ useEffect(() => {
     setRidePopUpPanel(true);
     setConfirmRidePopupPanel(false);
   };
+  const handleRideConfirmed = (data) => {
+    setRideConfirmed(data);
+    // Optionally update UI or show a popup
+    setConfirmRidePopupPanel(true);
+  };
   socket.on('new-ride', handleNewRide);
-  return () => socket.off('new-ride', handleNewRide);
+  socket.on('ride-confirmed', handleRideConfirmed);
+  return () => {
+    socket.off('new-ride', handleNewRide);
+    socket.off('ride-confirmed', handleRideConfirmed);
+  };
 }, [socket]);
 
  useGSAP(function () {
@@ -98,6 +108,9 @@ return(
   </div> 
 <div className='h-3/5'>
 <img className='h-full w-full object-cover' src={Log} />
+
+
+
 </div>
 
 <div className='h-2/5 p-6'>

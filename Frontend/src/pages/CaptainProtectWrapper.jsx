@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { CaptainDataContext } from '../context/CaptainContext';
 
 const CaptainProtectWrapper = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('captain-token');
   const navigate = useNavigate();
   const { captain, setCaptain, isLoading, setIsLoading } = useContext(CaptainDataContext);
 
@@ -25,7 +25,7 @@ const CaptainProtectWrapper = ({ children }) => {
         }
       } catch (err) {
         console.error(err);
-        localStorage.removeItem('token');
+        localStorage.removeItem('captain-token');
         navigate('/captain-login');
       } finally {
         setIsLoading(false);
