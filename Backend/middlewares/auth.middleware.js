@@ -24,12 +24,21 @@ module.exports.authUser = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await UserModel.findById(decoded._id);
     if (!user) {
+<<<<<<< HEAD
 
       console.error('authUser: User not found in database for token user ID:', decoded._id);
       return res.status(401).json({ message: 'User not found' });
 
       return res.status(401).json({ message: 'Unauthorized' });
 
+=======
+<<<<<<< HEAD
+      console.error('authUser: User not found in database for token user ID:', decoded._id);
+      return res.status(401).json({ message: 'User not found' });
+=======
+      return res.status(401).json({ message: 'Unauthorized' });
+>>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
+>>>>>>> 33ee698d3b304cec4a27a7511be235cee2f8c5ca
     }
     req.user = user;
     return next();
