@@ -53,10 +53,11 @@ module.exports.getAutoCompleteSuggestions = async (input) => {
 	const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&key=${apiKey}`;
 	try {
 		const response = await axios.get(url);
-		if (response.data.status === 'OK') {
-			return response.data.predictions;
+		if (response.data.status === 'OK' || response.data.status === 'ZERO_RESULTS') {
+			return response.data.predictions || [];
 		} else {
-			throw new Error('Unable to fetch suggestions');
+			console.error('Google Places API error:', response.data.status, response.data.error_message);
+			throw new Error(`Google API error: ${response.data.status}`);
 		}
 	} catch (err) {
 		console.error(err);
@@ -65,6 +66,7 @@ module.exports.getAutoCompleteSuggestions = async (input) => {
 }
 
 module.exports.getCaptainsInTheRadius = async (lat, lng, radius) => {
+<<<<<<< HEAD
 	//radius in KM
 	console.log(`[maps.service] Searching for captains in radius ${radius}km around [lng: ${lng}, lat: ${lat}]`);
 	const captains = await captainModel.find({
@@ -77,4 +79,25 @@ module.exports.getCaptainsInTheRadius = async (lat, lng, radius) => {
 	console.log(`[maps.service] Found ${captains.length} captains matching geolocation.`);
 
 	return captains;
+=======
+	// radius in KM
+	// Captain location is stored as flat {lat, lng}, not GeoJSON,
+	// so we use haversine formula in JS instead of $geoWithin
+	const captains = await captainModel.find({ 'location.lat': { $exists: true }, 'location.lng': { $exists: true } });
+
+	const toRad = (val) => (val * Math.PI) / 180;
+	const R = 6371; // Earth radius in km
+
+	return captains.filter(captain => {
+		const dLat = toRad(captain.location.lat - lat);
+		const dLng = toRad(captain.location.lng - lng);
+		const a =
+			Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+			Math.cos(toRad(lat)) * Math.cos(toRad(captain.location.lat)) *
+			Math.sin(dLng / 2) * Math.sin(dLng / 2);
+		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		const distance = R * c;
+		return distance <= radius;
+	});
+>>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
 }

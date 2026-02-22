@@ -58,8 +58,11 @@ const RidePopUp = (props) => {
             if (props.setRidePopPanel) props.setRidePopPanel(false);
             if (props.setRidePopupPanel) props.setRidePopupPanel(false);
           }} className='  bg-gray-400 text-gray-700 font-semibold  rounded-lg p-3 px-10'>Ignore</button>
-          <button onClick={() => { props.setConfirmRidePopPanel(false)
-           props.setConfirmRidePopPanel(true) }}
+          <button onClick={() => {
+            props.setConfirmRidePopPanel(true);
+            if (props.setRidePopPanel) props.setRidePopPanel(false);
+            if (props.setRidePopupPanel) props.setRidePopupPanel(false);
+          }}
             className=' bg-green-600 text-white font-semibold  rounded-lg p-3 px-10'>Accept</button>
         </div>
       </div>

@@ -1,8 +1,8 @@
-const UserModel=require('../models/user.model');
-const bcrypt=require('bcrypt');
-const jwt =require('jsonwebtoken');
-const blackListTokenModel=require('../models/blackllistToken.model');
-const captainModel=require('../models/captain.model');
+const UserModel = require('../models/user.model');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const blackListTokenModel = require('../models/blackllistToken.model');
+const captainModel = require('../models/captain.model');
 
 
 module.exports.authUser = async (req, res, next) => {
@@ -24,8 +24,12 @@ module.exports.authUser = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await UserModel.findById(decoded._id);
     if (!user) {
+<<<<<<< HEAD
       console.error('authUser: User not found in database for token user ID:', decoded._id);
       return res.status(401).json({ message: 'User not found' });
+=======
+      return res.status(401).json({ message: 'Unauthorized' });
+>>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
     }
     req.user = user;
     return next();
