@@ -33,32 +33,6 @@ const Home = () => {
   const [vehicleFound, setVehicleFound] = useState(false);
   const [waitingForDriver, setWaitingForDriver] = useState(false);
   const [vehicleType, setVehicleType] = useState(null);
-<<<<<<< HEAD
-  const [fare,getFare]=useState({})
-  const {socket} = useContext(SocketContext);
-  const {user}=useContext(UserDataContext);
- 
-  useEffect(()=>{
-    if (socket && user && user._id) {
-      console.log(user)
-      console.log('join', { userType: 'user', userId: user._id })
-      socket.emit('join', { userType: 'user', userId: user._id })
-    }
-  }, [user, socket])
-
-  useEffect(() => {
-    if (!socket) return;
-    
-    socket.on('ride-confirmed', (ride) => {
-      setVehicleFound(false)
-      setWaitingForDriver(true)
-    })
-
-    return () => {
-      socket.off('ride-confirmed')
-    }
-  }, [socket])
-=======
   const [fare, getFare] = useState({})
   const [confirmedRide, setConfirmedRide] = useState(null)
   const { socket } = useContext(SocketContext);
@@ -75,7 +49,6 @@ const Home = () => {
     })
     return () => socket.off('ride-confirmed')
   }, [user])
->>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
 
 
   const submitHandler = (e) => {
@@ -202,24 +175,6 @@ const Home = () => {
     }
   }
 
-<<<<<<< HEAD
-  async function createRide(){
-    try {
-      const currentToken = localStorage.getItem('token');
-      const response= await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`,{
-        pickup,
-        destination,
-        vehicleType
-      },{
-        headers:{ 
-        Authorization:`Bearer ${currentToken}`
-      }
-      })
-      console.log('Ride created successfully:', response.data)
-    } catch (err) {
-      console.error('Error creating ride:', err.response?.data || err.message);
-    }
-=======
   async function createRide() {
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`, {
       pickup,
@@ -231,7 +186,6 @@ const Home = () => {
       }
     })
     console.log(response.data)
->>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
   }
 
   return (

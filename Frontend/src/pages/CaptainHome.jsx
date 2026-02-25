@@ -11,16 +11,6 @@ import RidePopUp from "../components/RidePopUp";
 import { SocketContext } from "../context/SocketContext"
 import { CaptainDataContext } from "../context/CaptainContext"
 
-<<<<<<< HEAD
-const CaptainHome=()=>{
-const [ridePopUpPanel,setRidePopUpPanel]=useState(false) 
-const [ConfirmRidePopupPanel,setConfirmRidePopupPanel]=useState(false) 
-const ridePopupPanelRef=useRef(null)
-const confirmRidePopupPanelRef=useRef(null)
-const [ride,setRide]=useState(null);
-const [confirmride,setConfirmride]=useState(null);
-const [rideConfirmed, setRideConfirmed] = useState(null);
-=======
 const CaptainHome = () => {
   const [ridePopUpPanel, setRidePopUpPanel] = useState(false)
   const [ConfirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false)
@@ -28,61 +18,10 @@ const CaptainHome = () => {
   const confirmRidePopupPanelRef = useRef(null)
   const [ride, setRide] = useState(null);
   const [confirmride, setConfirmride] = useState(null);
->>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
 
   const { socket } = useContext(SocketContext)
   const { captain } = useContext(CaptainDataContext)
 
-<<<<<<< HEAD
-useEffect(() => {
-  if (socket && captain?._id) {
-    socket.emit('join', {
-      userId: captain._id,
-      userType: 'captain'
-    });
-    
-    const updateLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          socket.emit('update-location-captain', {
-            userId: captain._id,
-            location: {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            }
-          });
-        });
-      }
-    };
-    
-    // Initial location update
-    updateLocation();
-    
-    const intervalId = setInterval(updateLocation, 10000);
-
-    return () => clearInterval(intervalId);
-  }
-}, [socket, captain?._id]);
-useEffect(() => {
-  if (!socket) return;
-  const handleNewRide = (data) => {
-    setRide(data);
-    setRidePopUpPanel(true);
-    setConfirmRidePopupPanel(false);
-  };
-  const handleRideConfirmed = (data) => {
-    setRideConfirmed(data);
-    // Optionally update UI or show a popup
-    setConfirmRidePopupPanel(true);
-  };
-  socket.on('new-ride', handleNewRide);
-  socket.on('ride-confirmed', handleRideConfirmed);
-  return () => {
-    socket.off('new-ride', handleNewRide);
-    socket.off('ride-confirmed', handleRideConfirmed);
-  };
-}, [socket]);
-=======
   useEffect(() => {
     if (socket && captain?._id) {
       socket.emit('join', {
@@ -123,7 +62,6 @@ useEffect(() => {
     socket.on('new-ride', handleNewRide);
     return () => socket.off('new-ride', handleNewRide);
   }, [socket]);
->>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
 
   useGSAP(function () {
     if (ridePopUpPanel) {
@@ -150,24 +88,6 @@ useEffect(() => {
   }, [ConfirmRidePopupPanel])
 
 
-<<<<<<< HEAD
-  
-return(
-<div className='h-screen'>  
-<div className='fixed p-6 top-0 flez items-center justify-between w-screen '>
-   <img className='w-16 ' src={Hl}/>
-  <Link to='/home' className='fixed h-10 w-10 bg-white flex items-center justify-center rounded-full'>
-<i className="ri-logout-box-r-line"></i>
-</Link> 
-  </div> 
-<div className='h-3/5'>
-<img className='h-full w-full object-cover' src={Log} />
-
-
-
-</div>
-=======
->>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
 
   return (
     <div className='h-screen'>

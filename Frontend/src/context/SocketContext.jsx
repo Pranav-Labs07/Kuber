@@ -1,55 +1,28 @@
-import { createContext, useContext, useEffect, useRef } from "react";
-import { io } from "socket.io-client";
+import React, { createContext, useEffect } from 'react';
+import { io } from 'socket.io-client';
 
 export const SocketContext = createContext();
 
-export const useSocket = () => useContext(SocketContext);
-
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:4000";
+const socket = io(`${import.meta.env.VITE_BASE_URL}`); // Replace with your server URL
 
 const SocketProvider = ({ children }) => {
-  const socketRef = useRef(null);
+    useEffect(() => {
+        // Basic connection logic
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
 
-  useEffect(() => {
-    // Only create socket once
-    if (socketRef.current) return;
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+        });
 
-    const socketInstance = io(SOCKET_URL, {
-      transports: ["websocket"],
-      autoConnect: true,
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      reconnectionAttempts: 5,
-    });
-
-    socketRef.current = socketInstance;
-
-    socketInstance.on("connect", () => {
-      console.log("Socket connected:", socketInstance.id);
-    });
-    socketInstance.on("disconnect", () => {
-      console.log("Socket disconnected");
-    });
-    socketInstance.on("connect_error", (error) => {
-      console.error("Socket connection error:", error);
-    });
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
-    };
-  }, []);
-
-  return (
-    <SocketContext.Provider value={{ socket: socketRef.current }}>
-      {children}
-    </SocketContext.Provider>
-  );
+    }, []);
+   return (
+        <SocketContext.Provider value={{ socket }}>
+            {children}
+        </SocketContext.Provider>
+    );
 };
-
 export default SocketProvider;
 
  // // Send message to a specific event
