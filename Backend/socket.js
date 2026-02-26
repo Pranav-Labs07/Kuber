@@ -16,27 +16,10 @@ function initializeSocket(server) {
 
     socket.on('join', async (data) => {
       const { userId, userType } = data;
-<<<<<<< HEAD
-
-      try {
-        // ✅ FIX: Add error handling and logging
-        console.log(`[v0] Join event received - userId: ${userId}, userType: ${userType}, socketId: ${socket.id}`);
-
-        if (userType === 'user') {
-          const updatedUser = await userModel.findByIdAndUpdate(userId, { socketId: socket.id }, { new: true });
-          console.log(`[v0] User socketId updated:`, updatedUser?.socketId);
-        } else if (userType === 'captain') {
-          const updatedCaptain = await captainModel.findByIdAndUpdate(userId, { socketId: socket.id }, { new: true });
-          console.log(`[v0] Captain socketId updated:`, updatedCaptain?.socketId);
-        }
-      } catch (err) {
-        console.error(`[v0] Error in join event:`, err);
-=======
       if (userType === 'captain') {
         await captainModel.findByIdAndUpdate(userId, { socketId: socket.id });
       } else if (userType === 'user') {
         await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
->>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
       }
     });
 
@@ -46,18 +29,6 @@ function initializeSocket(server) {
         socket.emit('error', { message: 'Invalid location data.' });
         return;
       }
-<<<<<<< HEAD
-      try {
-        await captainModel.findByIdAndUpdate(userId, {
-          location: {
-            type: 'Point',
-            coordinates: [location.lng, location.lat]
-          }
-        });
-      } catch (err) {
-        console.error(`[v0] Error updating location for captain ${userId}:`, err);
-      }
-=======
       await captainModel.findByIdAndUpdate(userId, {
         location: {
           lat: location.lat,
@@ -65,7 +36,6 @@ function initializeSocket(server) {
         }
       });
 
->>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
     });
 
     socket.on('disconnect', () => {
@@ -73,21 +43,8 @@ function initializeSocket(server) {
     });
   });
 }
-<<<<<<< HEAD
-
-// ✅ FIX: Add null checks and detailed logging
-const sendMessageToSocketId = (socketId, messageObject) => {
-  console.log(`[v0] Attempting to send message to socketId: ${socketId}`, messageObject);
-
-  if (!socketId) {
-    console.error('[v0] ERROR: socketId is null/undefined - message not sent', messageObject);
-    return false;
-  }
-
-=======
 const sendMessageToSocketId = (socketId, messageObject) => {
   console.log(`Sending message to ${socketId}, messageObject`, messageObject)
->>>>>>> 2089b0ac1a2fd268299f0f576743ae495ea0f95b
   if (io) {
     io.to(socketId).emit(messageObject.event, messageObject.data);
     console.log(`[v0] Message sent successfully to socketId: ${socketId}, event: ${messageObject.event}`);

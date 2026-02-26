@@ -1,5 +1,4 @@
 # Uber Backend API Documentation
-
 ## Overview
 This is the backend API for the Uber application built with Node.js, Express, and MongoDB.
 
@@ -430,8 +429,6 @@ Content-Type: application/json
 ```
 
 #### Request Body
-The request body must be a JSON object with the following structure:
-#### Request Body
 The request body must be a JSON object. The example below includes inline comments (using `//`) that describe validation rules and constraints enforced by the API.
 
 > Note: the comments shown are for documentation only and are not valid in strict JSON parsers — they illustrate required fields and constraints to help crafting requests in Postman or your client.
@@ -750,7 +747,55 @@ Server will run on `http://localhost:4000` (or the port specified in `.env`)
   updatedAt: Date (auto)
 }
 ```
-...
+
+### Captain Model
+
+```javascript
+{
+  fullname: {
+    firstname: String (required, min 3 chars),
+    lastname: String (min 3 chars)
+  },
+  email: String (required, unique, min 5 chars),
+  password: String (required, not included by default),
+  vehicle: {
+    color: String (required, min 3 chars),
+    plate: String (required, min 3 chars),
+    capacity: Number (required, min 1),
+    vehicleType: String (required, enum: ['car', 'motorcycle', 'auto'])
+  },
+  status: String (enum: ['active', 'inactive'], default: 'inactive'),
+  socketId: String,
+  createdAt: Date (auto),
+  updatedAt: Date (auto)
+}
+```
+
+### Ride Model
+
+```javascript
+{
+  user: ObjectId (reference to User, required),
+  captain: ObjectId (reference to Captain, optional),
+  pickup: String (required),
+  destination: String (required),
+  fare: Number,
+  status: String (enum: ['pending', 'accepted', 'started', 'completed', 'cancelled']),
+  duration: String,
+  distance: String,
+  createdAt: Date (auto),
+  updatedAt: Date (auto)
+}
+```
+
+### Blacklisted Token Model
+
+```javascript
+{
+  token: String (required, unique),
+  createdAt: Date (auto, with TTL index for auto-deletion)
+}
+```
 ### GET /rides/get-fare
 
 #### Description

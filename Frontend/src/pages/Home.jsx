@@ -14,6 +14,7 @@ import WaitingForDriver from "../components/WaitingForDriver";
 import { SocketContext } from "../context/SocketContext";
 import { UserDataContext } from "../context/UserContext";
 // import vehiclepanel from '../components/VehiclePanel'
+import LiveTracing from './LiveTracing';
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -33,22 +34,27 @@ const Home = () => {
   const [vehicleFound, setVehicleFound] = useState(false);
   const [waitingForDriver, setWaitingForDriver] = useState(false);
   const [vehicleType, setVehicleType] = useState(null);
-  const [fare, getFare] = useState({})
+  const [fare, setFare] = useState({})
   const [confirmedRide, setConfirmedRide] = useState(null)
   const { socket } = useContext(SocketContext);
   const { user } = useContext(UserDataContext);
 
-  useEffect(() => {
-    if (user && user._id) {
-      socket.emit('join', { userType: 'user', userId: user._id })
-    }
-    socket.on('ride-confirmed', ride => {
-      setConfirmedRide(ride)
-      setVehicleFound(false)
-      setWaitingForDriver(true)
+   useEffect(() => {
+        socket.emit("join", { userType: "user", userId: user._id })
+    }, [ user ])
+
+
+     socket.on('ride-confirmed', ride => {
+        setVehicleFound(false)
+        setWaitingForDriver(true)
+        setRide(ride)
     })
-    return () => socket.off('ride-confirmed')
-  }, [user])
+
+    socket.on('ride-started', ride => {
+        console.log("ride")
+        setWaitingForDriver(false)
+        navigate('/riding', { state: { ride } }) // Updated navigate to include ride data
+    })
 
 
   const submitHandler = (e) => {
@@ -167,11 +173,11 @@ const Home = () => {
           Authorization: `Bearer ${currentToken}`
         }
       });
-      getFare(response.data);
+      setFare(response.data);
       console.log(response.data);
     } catch (error) {
       console.error('Error fetching fare:', error);
-      getFare({});
+      setFare({});
     }
   }
 
