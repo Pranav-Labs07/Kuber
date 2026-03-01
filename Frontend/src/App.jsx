@@ -1,5 +1,6 @@
 import React from "react";
 import {Route,Routes} from 'react-router-dom';
+import { LoadScript } from '@react-google-maps/api';
 import Start from './pages/Start';
 import UserLogin from './pages/UserLogin';
 import UserSignup from './pages/UserSignup';
@@ -22,7 +23,8 @@ import ('remixicon/fonts/remixicon.css');
 
 const App=() =>{
   return (
-  <Routes>
+    <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+      <Routes>
     <Route path='/' element={<Start/> }/>
     <Route path='/login' element={<UserLogin/>}/>
     <Route path='/signup' element={<UserSignup/>}/>
@@ -46,6 +48,7 @@ const App=() =>{
 
 
   </Routes>
+    </LoadScript>
   );
 };
 

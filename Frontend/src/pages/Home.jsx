@@ -21,6 +21,8 @@ const Home = () => {
   const [destination, setDestination] = useState("");
   const [activeField, setActiveField] = useState(null); // 'pickup' or 'destination'
   const [suggestions, setSuggestions] = useState([]);
+  const [pickupSuggestions, setPickupSuggestions] = useState([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
   const [panelOpen, setPanelOpen] = useState(false);
   const vehiclePanelRef = useRef(null);
   const panelCloseRef = useRef(null);
@@ -36,6 +38,7 @@ const Home = () => {
   const [vehicleType, setVehicleType] = useState(null);
   const [fare, setFare] = useState({});
   const [confirmedRide, setConfirmedRide] = useState(null);
+  const [ride, setRide] = useState(null);
 
   const navigate = useNavigate();
   const { socket } = useContext(SocketContext);
@@ -69,7 +72,7 @@ const Home = () => {
           },
         },
       );
-      setSuggestions(response.data);
+      setPickupSuggestions(response.data);
     } catch {
       // handle error
     }

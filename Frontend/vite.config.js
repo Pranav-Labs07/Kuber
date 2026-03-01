@@ -7,4 +7,9 @@ export default defineConfig({
   plugins: [react(),
       tailwindcss()],
 
+      optimizeDeps: {
+  exclude: ["@react-google-maps/api"],
+}
+
 })
+
