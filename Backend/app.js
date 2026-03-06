@@ -1,67 +1,28 @@
-const userModel = require('./models/user.model');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const blackListTokenModel = require('./models/blackllistToken.model');
-const captainModel = require('./models/captain.model');
+require("dotenv").config();
 
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const connectToDb = require('./db/db');
+const userRoutes = require('./routes/user.routes');
+const captainRoutes = require('./routes/captain.routes');
+const mapsRoutes = require('./routes/maps.routes');
+const rideRoutes = require('./routes/ride.routes');
 
-module.exports.authUser = async (req, res, next) => {
-    const token = req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
+const app = express();
 
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
+connectToDb();
 
-    const isBlacklisted = await blackListTokenModel.findOne({ token: token });
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-    if (isBlacklisted) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
+app.get('/', (req, res) => res.send('Hello World'));
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await userModel.findById(decoded._id);
+app.use('/users', userRoutes);
+app.use('/captains', captainRoutes);
+app.use('/maps', mapsRoutes);
+app.use('/rides', rideRoutes);
 
-        // ✅ FIXED: if user not found in DB, return 401 instead of passing null to next()
-        if (!user) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
-        req.user = user;
-        return next();
-
-    } catch (err) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-}
-
-module.exports.authCaptain = async (req, res, next) => {
-    const token = req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
-
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const isBlacklisted = await blackListTokenModel.findOne({ token: token });
-
-    if (isBlacklisted) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const captain = await captainModel.findById(decoded._id);
-
-        // ✅ FIXED: if captain not found in DB, return 401 instead of passing null
-        if (!captain) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
-        req.captain = captain;
-        return next();
-
-    } catch (err) {
-        console.log(err);
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-}
+module.exports = app;

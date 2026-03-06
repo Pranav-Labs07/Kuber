@@ -164,7 +164,6 @@ const Home = () => {
   );
 
   async function findTrip() {
-    setVehiclePanel(true);
     setPanelOpen(false);
     const response = await axios.get(
       `${import.meta.env.VITE_BASE_URL}/rides/get-fare`,
@@ -174,6 +173,7 @@ const Home = () => {
       },
     );
     setFare(response.data);
+    setVehiclePanel(true); // ← moved here
   }
 
   async function createRide() {
@@ -302,6 +302,8 @@ const Home = () => {
       >
         <WaitingForDriver
           ride={ride}
+          fare={fare} // ← add
+          vehicleType={vehicleType} // ← add
           setVehicleFound={setVehicleFound}
           setWaitingForDriver={setWaitingForDriver}
           waitingForDriver={waitingForDriver}

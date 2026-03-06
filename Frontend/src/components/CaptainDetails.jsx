@@ -1,88 +1,56 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import axios from 'axios';
-import Rd from "../assets/rdm.jpg"
-import { useNavigate } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { CaptainDataContext } from '../context/CaptainContext'
 
-const ConfirmRidePopUp = (props) => {
-    const [ otp, setOtp ] = useState('')
-    const navigate = useNavigate()
+const CaptainDetails = () => {
+    const { captain } = useContext(CaptainDataContext)
 
-    const submitHander = async (e) => {
-        e.preventDefault()
-
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/rides/start-ride`, {
-            params: {
-                rideId: props.ride._id,
-                otp: otp
-            },
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-
-        if (response.status === 200) {
-            props.setConfirmRidePopupPanel(false)
-            props.setRidePopupPanel(false)
-            navigate('/captain-riding', { state: { ride: props.ride } })
-        }
-
-
-    }
     return (
         <div>
-            <h5 className='p-1 text-center w-[93%] absolute top-0' onClick={() => {
-                props.setRidePopupPanel(false)
-            }}><i className="text-3xl text-gray-200 ri-arrow-down-wide-line"></i></h5>
-            <h3 className='text-2xl font-semibold mb-5'>Confirm this ride to Start</h3>
-            <div className='flex items-center justify-between p-3 border-2 border-yellow-400 rounded-lg mt-4'>
-                <div className='flex items-center gap-3 '>
-                    <img className='h-10 w-10 rounded-full object-cover' src={Rd}/>
-                    <h2 className='text-lg font-medium capitalize'>{props.ride?.user.fullname.firstname}</h2>
+            {/* Captain name + status */}
+            <div className='flex items-center justify-between mb-6'>
+                <div className='flex items-center gap-3'>
+                    <div className='h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center text-xl font-bold uppercase'>
+                        {captain?.fullname?.firstname?.[0] || 'C'}
+                    </div>
+                    <div>
+                        <h2 className='text-lg font-semibold capitalize'>
+                            {captain?.fullname?.firstname} {captain?.fullname?.lastname}
+                        </h2>
+                        <p className='text-sm text-gray-500 capitalize'>{captain?.vehicle?.vehicleType} · {captain?.vehicle?.plate}</p>
+                    </div>
                 </div>
-                <h5 className='text-lg font-semibold'>2.2 KM</h5>
+                <div className='text-right'>
+                    <h4 className='text-xl font-bold'>₹0.00</h4>
+                    <p className='text-xs text-gray-500'>Today's earnings</p>
+                </div>
             </div>
-            <div className='flex gap-2 justify-between flex-col items-center'>
-                <div className='w-full mt-5'>
-                    <div className='flex items-center gap-5 p-3 border-b-2'>
-                        <i className="ri-map-pin-user-fill"></i>
-                        <div>
-                            <h3 className='text-lg font-medium'>562/11-A</h3>
-                            <p className='text-sm -mt-1 text-gray-600'>{props.ride?.pickup}</p>
-                        </div>
-                    </div>
-                    <div className='flex items-center gap-5 p-3 border-b-2'>
-                        <i className="text-lg ri-map-pin-2-fill"></i>
-                        <div>
-                            <h3 className='text-lg font-medium'>562/11-A</h3>
-                            <p className='text-sm -mt-1 text-gray-600'>{props.ride?.destination}</p>
-                        </div>
-                    </div>
-                    <div className='flex items-center gap-5 p-3'>
-                        <i className="ri-currency-line"></i>
-                        <div>
-                            <h3 className='text-lg font-medium'>₹{props.ride?.fare} </h3>
-                            <p className='text-sm -mt-1 text-gray-600'>Cash Cash</p>
-                        </div>
-                    </div>
+
+            {/* Stats row */}
+            <div className='flex justify-between bg-gray-100 rounded-xl p-4'>
+                <div className='text-center'>
+                    <i className="ri-time-line text-2xl mb-1 block"></i>
+                    <h5 className='text-lg font-semibold'>0<span className='text-sm font-normal'> hrs</span></h5>
+                    <p className='text-xs text-gray-500'>Hours online</p>
                 </div>
-
-                <div className='mt-6 w-full'>
-                    <form onSubmit={submitHander}>
-                        <input value={otp} onChange={(e) => setOtp(e.target.value)} type="text" className='bg-[#eee] px-6 py-4 font-mono text-lg rounded-lg w-full mt-3' placeholder='Enter OTP' />
-
-                        <button className='w-full mt-5 text-lg flex justify-center bg-green-600 text-white font-semibold p-3 rounded-lg'>Confirm</button>
-                        <button onClick={() => {
-                            props.setConfirmRidePopupPanel(false)
-                            props.setRidePopupPanel(false)
-
-                        }} className='w-full mt-2 bg-red-600 text-lg text-white font-semibold p-3 rounded-lg'>Cancel</button>
-
-                    </form>
+                <div className='text-center border-x border-gray-300 px-6'>
+                    <i className="ri-speed-up-line text-2xl mb-1 block"></i>
+                    <h5 className='text-lg font-semibold'>0<span className='text-sm font-normal'> km</span></h5>
+                    <p className='text-xs text-gray-500'>Distance</p>
                 </div>
+                <div className='text-center'>
+                    <i className="ri-booklet-line text-2xl mb-1 block"></i>
+                    <h5 className='text-lg font-semibold'>0</h5>
+                    <p className='text-xs text-gray-500'>Rides</p>
+                </div>
+            </div>
+
+            {/* Status indicator */}
+            <div className='flex items-center justify-center gap-2 mt-4'>
+                <span className='h-3 w-3 rounded-full bg-green-500 inline-block'></span>
+                <p className='text-sm text-gray-600'>You are online — waiting for ride requests</p>
             </div>
         </div>
     )
 }
 
-export default ConfirmRidePopUp
+export default CaptainDetails

@@ -1,5 +1,6 @@
 import React from "react";
-const LocationSearchPanel = ({ suggestions = [], onSelectSuggestion, setPanelOpen }) => {
+
+const LocationSearchPanel = ({ suggestions = [], setPanelOpen, setPickup, setDestination, activeField }) => {
   return (
     <div>
       {suggestions.length === 0 && (
@@ -9,10 +10,14 @@ const LocationSearchPanel = ({ suggestions = [], onSelectSuggestion, setPanelOpe
         <div
           key={index}
           onClick={() => {
-            onSelectSuggestion(elem);
-            setPanelOpen(true);
+            if (activeField === "pickup") {
+              setPickup(elem);
+            } else {
+              setDestination(elem);
+            }
+            setPanelOpen(true); 
           }}
-          className={`flex gap-4 border-2 p-3 rounded-xl items-center my-2 justify-start cursor-pointer border-gray-300 hover:border-black hover:bg-gray-100`}
+          className="flex gap-4 border-2 p-3 rounded-xl items-center my-2 justify-start cursor-pointer border-gray-300 hover:border-black hover:bg-gray-100"
         >
           <h2 className="bg-[#eee] h-8 flex items-center justify-center w-12 rounded-full">
             <i className="ri-map-pin-fill"></i>
