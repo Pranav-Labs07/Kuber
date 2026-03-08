@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get('/', (req, res) => res.send('Hello World'));
+/* ---------- API Routes ---------- */
 
 app.use('/users', userRoutes);
 app.use('/captains', captainRoutes);
@@ -29,10 +29,12 @@ app.use('/rides', rideRoutes);
 
 /* ---------- Serve Frontend (React/Vite build) ---------- */
 
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
+const frontendPath = path.join(__dirname, "../Frontend/dist");
+
+app.use(express.static(frontendPath));
 
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 module.exports = app;
