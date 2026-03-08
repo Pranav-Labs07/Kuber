@@ -65,7 +65,7 @@ const CaptainHome = () => {
     async function confirmRide() {
         try {
             await axios.post(
-                `${import.meta.env.VITE_BASE_URL}/rides/confirm`,
+                `/rides/confirm`,
                 { rideId: ride._id },
                 { headers: { Authorization: `Bearer ${localStorage.getItem('captain-token')}` } }
             )

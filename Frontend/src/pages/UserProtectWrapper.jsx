@@ -20,7 +20,7 @@ const UserProtectWrapper = ({ children }) => {
 
       setIsLoading(true);
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/profile`, {
+        const response = await axios.get(`/users/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.status === 200) {

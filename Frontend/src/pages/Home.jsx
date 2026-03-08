@@ -71,7 +71,7 @@ const Home = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/maps/get-suggestions`,
+        `/maps/get-suggestions`,
         {
           params: { input: e.target.value },
           headers: { Authorization: `Bearer ${token}` },
@@ -90,7 +90,7 @@ const Home = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/maps/get-suggestions`,
+        `/maps/get-suggestions`,
         {
           params: { input: e.target.value },
           headers: { Authorization: `Bearer ${token}` },
@@ -166,7 +166,7 @@ const Home = () => {
   async function findTrip() {
     setPanelOpen(false);
     const response = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}/rides/get-fare`,
+      `/rides/get-fare`,
       {
         params: { pickup, destination },
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -178,7 +178,7 @@ const Home = () => {
 
   async function createRide() {
     await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/rides/create`,
+      `/rides/create`,
       {
         pickup,
         destination,
