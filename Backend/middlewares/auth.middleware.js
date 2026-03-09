@@ -1,67 +1,102 @@
 const userModel = require('../models/user.model');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const blackListTokenModel = require('../models/blackllistToken.model');
 const captainModel = require('../models/captain.model');
 
 
 module.exports.authUser = async (req, res, next) => {
-    const token = req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
-
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const isBlacklisted = await blackListTokenModel.findOne({ token: token });
-
-    if (isBlacklisted) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
 
     try {
+
+        const authHeader = req.headers.authorization;
+        const cookieToken = req.cookies?.token;
+
+        console.log("Auth Header:", authHeader);
+        console.log("Cookie Token:", cookieToken);
+
+        const token = cookieToken || authHeader?.split(' ')[1];
+
+        if (!token) {
+            console.log("❌ No token received");
+            return res.status(401).json({ message: 'Unauthorized - No token' });
+        }
+
+        const isBlacklisted = await blackListTokenModel.findOne({ token });
+
+        if (isBlacklisted) {
+            console.log("❌ Token is blacklisted");
+            return res.status(401).json({ message: 'Unauthorized - Blacklisted token' });
+        }
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        console.log("Decoded Token:", decoded);
+
         const user = await userModel.findById(decoded._id);
 
-        // ✅ FIXED: if user not found in DB, return 401 instead of passing null to next()
         if (!user) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            console.log("❌ User not found:", decoded._id);
+            return res.status(401).json({ message: 'Unauthorized - User not found' });
         }
 
         req.user = user;
-        return next();
+
+        next();
 
     } catch (err) {
-        return res.status(401).json({ message: 'Unauthorized' });
+
+        console.log("❌ JWT Error:", err.message);
+        return res.status(401).json({ message: 'Unauthorized - Invalid token' });
+
     }
-}
+
+};
+
 
 module.exports.authCaptain = async (req, res, next) => {
-    const token = req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
-
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const isBlacklisted = await blackListTokenModel.findOne({ token: token });
-
-    if (isBlacklisted) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
 
     try {
+
+        const authHeader = req.headers.authorization;
+        const cookieToken = req.cookies?.token;
+
+        console.log("Auth Header:", authHeader);
+        console.log("Cookie Token:", cookieToken);
+
+        const token = cookieToken || authHeader?.split(' ')[1];
+
+        if (!token) {
+            console.log("❌ No token received");
+            return res.status(401).json({ message: 'Unauthorized - No token' });
+        }
+
+        const isBlacklisted = await blackListTokenModel.findOne({ token });
+
+        if (isBlacklisted) {
+            console.log("❌ Token is blacklisted");
+            return res.status(401).json({ message: 'Unauthorized - Blacklisted token' });
+        }
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        console.log("Decoded Token:", decoded);
+
         const captain = await captainModel.findById(decoded._id);
 
-        // ✅ FIXED: if captain not found in DB, return 401 instead of passing null
         if (!captain) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            console.log("❌ Captain not found:", decoded._id);
+            return res.status(401).json({ message: 'Unauthorized - Captain not found' });
         }
 
         req.captain = captain;
-        return next();
+
+        next();
 
     } catch (err) {
-        console.log(err);
-        return res.status(401).json({ message: 'Unauthorized' });
+
+        console.log("❌ JWT Error:", err.message);
+        return res.status(401).json({ message: 'Unauthorized - Invalid token' });
+
     }
-}
+
+};
