@@ -1,28 +1,33 @@
-import React, { createContext, useEffect } from 'react';
-import { io } from 'socket.io-client';
+import React, { createContext, useEffect } from "react";
+import { io } from "socket.io-client";
 
 export const SocketContext = createContext();
 
-const socket = io(); // Replace with your server URL
+const socket = io("https://kuber.up.railway.app", {
+  transports: ["websocket"]
+});
 
 const SocketProvider = ({ children }) => {
-    useEffect(() => {
-        // Basic connection logic
-        socket.on('connect', () => {
-            console.log('Connected to server');
-        });
 
-        socket.on('disconnect', () => {
-            console.log('Disconnected from server');
-        });
+  useEffect(() => {
 
-    }, []);
-   return (
-        <SocketContext.Provider value={{ socket }}>
-            {children}
-        </SocketContext.Provider>
-    );
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Socket disconnected");
+    });
+
+  }, []);
+
+  return (
+    <SocketContext.Provider value={{ socket }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
+
 export default SocketProvider;
 
  // // Send message to a specific event
