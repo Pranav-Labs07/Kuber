@@ -41,7 +41,6 @@ const Home = () => {
 
   useEffect(() => {
     if (user && user._id) {
-      // ✅ FIXED: only emit after user data is loaded
       socket.emit("join", { userType: "user", userId: user._id });
     }
   }, [user]);
