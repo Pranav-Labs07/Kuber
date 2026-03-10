@@ -8,9 +8,14 @@ function initializeSocket(server) {
 
     io = socketIo(server, {
         cors: {
+            // ✅ FIXED: explicitly allow your frontend Railway URL
             origin: "*",
-            methods: ["GET", "POST"]
-        }
+            methods: ["GET", "POST"],
+            credentials: true
+        },
+        // ✅ FIXED: allow both transports so Railway proxy works
+        transports: ["polling", "websocket"],
+        allowEIO3: true // backwards compatibility
     });
 
     io.on("connection", (socket) => {
@@ -54,7 +59,6 @@ function initializeSocket(server) {
 
         });
 
-
         socket.on("update-location-captain", async (data) => {
 
             console.log("📍 Location update:", data);
@@ -80,7 +84,6 @@ function initializeSocket(server) {
 
         });
 
-
         socket.on("disconnect", () => {
             console.log("❌ Client disconnected:", socket.id);
         });
@@ -89,11 +92,10 @@ function initializeSocket(server) {
 
 }
 
-
 const sendMessageToSocketId = (socketId, messageObject) => {
 
     console.log("📤 Sending socket event:", messageObject.event);
-    console.log("Target socketId:", socketId);
+    console.log("🎯 Target socketId:", socketId);
 
     if (!io) {
         console.log("❌ Socket.io not initialized.");
@@ -101,11 +103,12 @@ const sendMessageToSocketId = (socketId, messageObject) => {
     }
 
     if (!socketId) {
-        console.log("❌ No socketId found for this captain");
+        console.log("❌ No socketId provided — captain may not have joined yet");
         return;
     }
 
     io.to(socketId).emit(messageObject.event, messageObject.data);
+    console.log("✅ Event emitted successfully");
 };
 
 module.exports = { initializeSocket, sendMessageToSocketId };
