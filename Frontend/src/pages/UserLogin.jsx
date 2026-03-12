@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from "axios";
 import { UserDataContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
-import Li from "../assets/llog.jpg"
+import Li from "../assets/userlogo.png";
 
 const UserLogin = () => {
   const [email, setEmail] = useState('');
@@ -49,7 +49,7 @@ const UserLogin = () => {
     <div className="p-7 flex flex-col justify-between min-h-screen">
       <div>
         <img
-          className="w-40 mb-6 bg-white"
+          className="w-30 mb-6 bg-white"
           src={Li}
           alt="Uber Logo"
         />

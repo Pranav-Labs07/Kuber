@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import llog from "../assets/Uber-Logo.png";
+import llog from "../assets/favicon.png";
 import Bg from "../assets/start.jpg";
 
 
