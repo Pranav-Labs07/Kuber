@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import {CaptainDataContext} from '../context/CaptainContext'
-import Cl from '../assets/captain-login.jpg';
+import Cl from '../assets/captain.png';
 
 const CaptainLogin= () => {
   const [email, setEmail] = useState('');
