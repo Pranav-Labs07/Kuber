@@ -4,7 +4,7 @@ import CaptainDetails from "../components/CaptainDetails";
 import RidePopUp from "../components/RidePopUp";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import Cl from '../assets/captain.png';
+import Cl from "../assets/captain.png";
 import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
 import { SocketContext } from "../context/SocketContext";
 import { CaptainDataContext } from "../context/CaptainContext";
@@ -21,21 +21,44 @@ const CaptainHome = () => {
   const { socket } = useContext(SocketContext);
   const { captain } = useContext(CaptainDataContext);
 
-  // Join socket room and start sending location when captain loads
- useEffect(() => {
-  if (!captain?._id) return;
+  // ✅ FIXED: emit join immediately if already connected
+  // socket.on("connect") never fires if socket is already connected when component mounts
+  useEffect(() => {
+    if (!captain?._id) return;
 
-  socket.on("connect", () => {
-    socket.emit("join", {
-      userId: captain._id,
-      userType: "captain",
-    });
-  });
+    const emitJoin = () => {
+      socket.emit("join", { userId: captain._id, userType: "captain" });
+      console.log("Captain joined socket:", captain._id);
+    };
 
-  return () => {
-    socket.off("connect");
-  };
-}, [captain, socket]);
+    if (socket.connected) {
+      emitJoin();
+    } else {
+      socket.on("connect", emitJoin);
+    }
+
+    const updateLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          socket.emit("update-location-captain", {
+            userId: captain._id,
+            location: {
+              ltd: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+          });
+        });
+      }
+    };
+
+    const locationInterval = setInterval(updateLocation, 10000);
+    updateLocation();
+
+    return () => {
+      socket.off("connect", emitJoin);
+      clearInterval(locationInterval);
+    };
+  }, [captain, socket]);
 
   // Listen for new ride from user — slides up RidePopUp
   useEffect(() => {
@@ -102,11 +125,7 @@ const CaptainHome = () => {
   return (
     <div className="h-screen relative overflow-hidden">
       <div className="fixed p-4 top-0 flex items-center justify-between w-screen z-10">
-        <img
-          className="w-16"
-          src={Cl}
-          alt="Uber"
-        />
+        <img className="w-16" src={Cl} alt="Uber" />
         <Link
           to="/captain-login"
           className="h-10 w-10 bg-white flex items-center justify-center rounded-full shadow"

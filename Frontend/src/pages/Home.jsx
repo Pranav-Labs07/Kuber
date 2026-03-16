@@ -40,11 +40,25 @@ const Home = () => {
   const { user } = useContext(UserDataContext);
   const navigate = useNavigate();
 
+  // ✅ FIXED: emit join immediately if connected, or wait for connect event
   useEffect(() => {
-    if (user && user._id) {
+    if (!user?._id) return;
+
+    const emitJoin = () => {
       socket.emit("join", { userType: "user", userId: user._id });
+      console.log("User joined socket:", user._id);
+    };
+
+    if (socket.connected) {
+      emitJoin();
+    } else {
+      socket.on("connect", emitJoin);
     }
-  }, [user]);
+
+    return () => {
+      socket.off("connect", emitJoin);
+    };
+  }, [user, socket]);
 
   useEffect(() => {
     socket.on("ride-confirmed", (ride) => {
@@ -70,13 +84,10 @@ const Home = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const response = await axios.get(
-        `/maps/get-suggestions`,
-        {
-          params: { input: e.target.value },
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const response = await axios.get(`/maps/get-suggestions`, {
+        params: { input: e.target.value },
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setPickupSuggestions(response.data);
     } catch (err) {
       console.error("Pickup suggestions error:", err);
@@ -89,13 +100,10 @@ const Home = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const response = await axios.get(
-        `/maps/get-suggestions`,
-        {
-          params: { input: e.target.value },
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const response = await axios.get(`/maps/get-suggestions`, {
+        params: { input: e.target.value },
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setDestinationSuggestions(response.data);
     } catch (err) {
       console.error("Destination suggestions error:", err);
@@ -165,13 +173,10 @@ const Home = () => {
 
   async function findTrip() {
     setPanelOpen(false);
-    const response = await axios.get(
-      `/rides/get-fare`,
-      {
-        params: { pickup, destination },
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      },
-    );
+    const response = await axios.get(`/rides/get-fare`, {
+      params: { pickup, destination },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
     setFare(response.data);
     setVehiclePanel(true); // ← moved here
   }
@@ -192,11 +197,7 @@ const Home = () => {
 
   return (
     <div className="h-screen relative overflow-hidden">
-      <img
-        className="w-16 absolute left-5 top-5 z-10"
-        src={logo}
-        alt=""
-      />
+      <img className="w-16 absolute left-5 top-5 z-10" src={logo} alt="" />
       <div className="h-screen w-screen">
         <LiveTracking />
       </div>
