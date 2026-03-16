@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
 import LiveTracking from "../components/LiveTracing";
-import car from "../assets/uber-go.'jpg";
+import car from "../assets/uber-go.jpg";
 
 const Riding = () => {
   const location = useLocation();
