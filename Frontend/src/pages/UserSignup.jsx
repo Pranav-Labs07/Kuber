@@ -3,6 +3,7 @@ import {Link,useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { useContext } from "react";
 import { UserDataContext } from '../context/UserContext';
+import cp from "../assets/captain.png";
 
 const UserSignup=()=>{
 
@@ -51,8 +52,8 @@ const { setUser } = useContext(UserDataContext);
       <div>
         <img
           className="w-40 mb-6"
-          src="https://www.logo.wine/a/logo/Uber/Uber-Logo.wine.svg"
-          alt="Uber Logo"
+          src={cp}
+          alt="Kuber Logo"
         />
 
         <form onSubmit={(e) => {

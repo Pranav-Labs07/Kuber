@@ -4,6 +4,7 @@ import CaptainDetails from "../components/CaptainDetails";
 import RidePopUp from "../components/RidePopUp";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import Cl from '../assets/captain.png';
 import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
 import { SocketContext } from "../context/SocketContext";
 import { CaptainDataContext } from "../context/CaptainContext";
@@ -100,11 +101,10 @@ const CaptainHome = () => {
 
   return (
     <div className="h-screen relative overflow-hidden">
-      {/* Top bar */}
       <div className="fixed p-4 top-0 flex items-center justify-between w-screen z-10">
         <img
           className="w-16"
-          src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
+          src={Cl}
           alt="Uber"
         />
         <Link

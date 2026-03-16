@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
 import LiveTracking from "../components/LiveTracing";
+import car from "../assets/uber-go.'jpg";
 
 const Riding = () => {
   const location = useLocation();
@@ -34,7 +35,7 @@ const Riding = () => {
         <div className="flex items-center justify-between">
           <img
             className="h-12"
-            src="https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg"
+            src={car}
             alt=""
           />
           <div className="text-right">
@@ -67,9 +68,7 @@ const Riding = () => {
             </div>
           </div>
         </div>
-        <button className="w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg">
-          Make a Payment
-        </button>
+        <button className="w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg">Make a Payment</button>
       </div>
     </div>
   );
