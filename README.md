@@ -1,13 +1,23 @@
-# 🚗 Kuber Backend API
+# 🚗 Kuber - An Uber Clone (Full Stack Application)
 
 ## 📌 Overview
 
-Backend API for an Uber-like application built with **Node.js, Express, and MongoDB**.
-Supports user authentication, captain (driver) management, and ride fare calculation.
+Kuber is a full-stack Uber-like ride booking application built using **Node.js, Express, MongoDB, and modern frontend technologies**.
+
+It supports user authentication, captain (driver) management, and ride fare estimation with a clean UI and secure backend.
+
+---
+
+## 🌐 Live Project
+
+🔗 **Live App:** https://kuber.up.railway.app
+🔗 **Frontend Repo:** https://github.com/Pranav-Labs07/Kuber
 
 ---
 
 ## ⚙️ Tech Stack
+
+### 🔹 Backend
 
 * Node.js
 * Express.js
@@ -15,6 +25,34 @@ Supports user authentication, captain (driver) management, and ride fare calcula
 * JWT Authentication
 * Bcrypt
 * Express Validator
+
+### 🔹 Frontend
+
+* React.js (assumed based on structure)
+* Axios / Fetch API
+* Modern UI components
+
+---
+
+## 🚀 Features
+
+### 👤 User
+
+* Register & Login
+* JWT Authentication
+* View Profile
+* Book Rides
+
+### 🚕 Captain (Driver)
+
+* Register with vehicle details
+* Accept/Manage rides
+
+### 🚘 Ride System
+
+* Fare Estimation
+* Pickup & Destination handling
+* Ride status tracking
 
 ---
 
@@ -27,15 +65,17 @@ git clone https://github.com/your-username/your-repo.git
 cd your-repo
 ```
 
-### 2️⃣ Install Dependencies
+---
+
+## 🔧 Backend Setup
+
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3️⃣ Setup Environment Variables
-
-Create a `.env` file:
+### Create `.env` file
 
 ```env
 PORT=4000
@@ -43,7 +83,7 @@ DB_CONNECT=your_mongodb_uri
 JWT_SECRET=your_secret_key
 ```
 
-### 4️⃣ Run Server
+### Run Backend
 
 ```bash
 npx nodemon
@@ -55,8 +95,29 @@ or
 node server.js
 ```
 
-Server runs on:
+Backend runs on:
 👉 `http://localhost:4000`
+
+---
+
+## 🌐 Frontend Setup
+
+### Clone Frontend Repo
+
+```bash
+git clone https://github.com/Pranav-Labs07/Kuber
+cd Kuber
+npm install
+npm run dev
+```
+
+### ⚠️ Important
+
+Update frontend API base URL if needed:
+
+```env
+VITE_BASE_URL=http://localhost:4000
+```
 
 ---
 
@@ -64,9 +125,9 @@ Server runs on:
 
 * JWT-based authentication
 * Token required for protected routes
-* Can be sent via:
+* Sent via:
 
-  * `Authorization: Bearer <token>`
+  * Authorization header
   * Cookies
 
 ---
@@ -77,11 +138,9 @@ Server runs on:
 
 ### 👤 Users
 
-#### 🔹 Register User
+#### 🔹 Register
 
 **POST** `/users/register`
-
-##### Request Body
 
 ```json
 {
@@ -94,68 +153,27 @@ Server runs on:
 }
 ```
 
-##### Success Response (201)
-
-```json
-{
-  "token": "jwt_token",
-  "user": {
-    "_id": "id",
-    "fullname": { "firstname": "John", "lastname": "Doe" },
-    "email": "john@example.com"
-  }
-}
-```
-
-##### Errors
-
-* Invalid email
-* Password < 6 chars
-* Email already exists
-
 ---
 
-#### 🔹 Get Profile
+#### 🔹 Profile
 
 **GET** `/users/profile`
-
 🔐 Requires Auth
-
-##### Response
-
-```json
-{
-  "_id": "id",
-  "fullname": { "firstname": "John", "lastname": "Doe" },
-  "email": "john@example.com"
-}
-```
 
 ---
 
 #### 🔹 Logout
 
 **GET** `/users/logout`
-
 🔐 Requires Auth
-
-##### Response
-
-```json
-{
-  "message": "Logged out"
-}
-```
 
 ---
 
-### 🚕 Captains (Drivers)
+### 🚕 Captains
 
-#### 🔹 Register Captain
+#### 🔹 Register
 
 **POST** `/captains/register`
-
-##### Request Body
 
 ```json
 {
@@ -174,38 +192,18 @@ Server runs on:
 }
 ```
 
-##### Validation
-
-* Vehicle type: `car | motorcycle | auto`
-* Capacity ≥ 1
-* All fields required
-
 ---
 
 ### 🚘 Rides
 
-#### 🔹 Get Fare Estimate
+#### 🔹 Get Fare
 
 **GET** `/rides/get-fare`
 
-🔐 Requires Auth
-
-##### Query Params
+Query:
 
 * `pickup`
 * `destination`
-
-##### Response
-
-```json
-{
-  "auto": 50.75,
-  "car": 120.50,
-  "moto": 30.25,
-  "distance": "10.5 km",
-  "duration": "25 min"
-}
-```
 
 ---
 
@@ -221,17 +219,17 @@ Server runs on:
 
 ## 🔒 Security
 
-* Passwords hashed using bcrypt (10 rounds)
+* Password hashing (bcrypt)
 * JWT authentication
-* Tokens blacklisted on logout
+* Token blacklisting on logout
 
 ---
 
 ## 🧪 Testing (Postman)
 
-* Method: `POST`
+* Method: POST
 * URL: `http://localhost:4000/users/register`
-* Headers: `Content-Type: application/json`
+* Header: `Content-Type: application/json`
 
 ---
 
@@ -253,7 +251,7 @@ Server runs on:
 
 ```js
 {
-  fullname: { firstname, lastname },
+  fullname,
   email,
   password,
   socketId
@@ -284,6 +282,28 @@ Server runs on:
   status
 }
 ```
+
+---
+
+## 🧠 How Frontend Connects to Backend
+
+Example API call:
+
+```js
+fetch("http://localhost:4000/users/register", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+});
+```
+
+---
+
+## ⚠️ Important Notes
+
+* Ensure backend is running before frontend
+* Update `.env` variables properly
+* Use correct API base URL in production
 
 ---
 
