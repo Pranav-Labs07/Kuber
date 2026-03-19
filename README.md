@@ -11,7 +11,7 @@ It supports user authentication, captain (driver) management, and ride fare esti
 ## 🌐 Live Project
 
 🔗 **Live App:** https://kuber.up.railway.app
-🔗 **Frontend Repo:** https://github.com/Pranav-Labs07/Kuber
+🔗 **Full Project Github Repo:** https://github.com/Pranav-Labs07/Kuber
 
 ---
 
