@@ -3,6 +3,7 @@ import { CaptainDataContext } from '../context/CaptainContext';
 import { SocketContext } from '../context/SocketContext';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import Logo from "../assets/captain.png";
 
 const CaptainSignup = () => {
 
@@ -98,7 +99,7 @@ const CaptainSignup = () => {
   return (
     <div className='py-5 px-5 h-screen flex flex-col justify-between'>
       <div>
-        <img className='w-20 mb-3' src="https://www.svgrepo.com/show/505031/uber-driver.svg" alt="" />
+        <img className='w-20 mb-3' src={Logo} alt="" />
 
         {/* ✅ Show validation errors */}
         {errors.length > 0 && (
