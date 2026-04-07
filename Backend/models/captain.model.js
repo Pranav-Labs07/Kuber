@@ -57,7 +57,6 @@ const captainSchema = new mongoose.Schema({
         }
     },
 
-    // ✅ FIXED: Changed to GeoJSON format required for 2dsphere index
     location: {
         type: {
             type: String,
@@ -71,7 +70,6 @@ const captainSchema = new mongoose.Schema({
     }
 })
 
-// ✅ FIXED: Add 2dsphere index so geospatial queries work
 captainSchema.index({ location: '2dsphere' })
 
 captainSchema.methods.generateAuthToken = function () {

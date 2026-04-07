@@ -68,13 +68,12 @@ module.exports.getAutoCompleteSuggestions = async (input) => {
 }
 
 module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
-    // ✅ FIXED: Use $nearSphere with GeoJSON Point and correct [lng, ltd] order
     const captains = await captainModel.find({
         location: {
             $nearSphere: {
                 $geometry: {
                     type: 'Point',
-                    coordinates: [ lng, ltd ] // longitude first, latitude second
+                    coordinates: [ lng, ltd ] 
                 },
                 $maxDistance: radius * 1000 // convert km to meters
             }

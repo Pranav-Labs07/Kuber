@@ -36,9 +36,9 @@ module.exports.createRide = async (req, res) => {
         console.log(`👥 Captains found in 50km radius: ${captainsInRadius.length}`);
 
         if (captainsInRadius.length === 0) {
-            console.log('⚠️ No captains in radius — falling back to all captains');
+            console.log(' No captains in radius — falling back to all captains');
             captainsInRadius = await captainModel.find({ socketId: { $ne: null, $exists: true } });
-            console.log(`👥 Total captains with socketId: ${captainsInRadius.length}`);
+            console.log(`Total captains with socketId: ${captainsInRadius.length}`);
         }
 
         const rideWithUser = await rideModel
@@ -50,7 +50,7 @@ module.exports.createRide = async (req, res) => {
         delete rideData.otp;
 
         captainsInRadius.forEach(captain => {
-            console.log(`📤 Notifying captain: ${captain._id} → socketId: ${captain.socketId}`);
+            console.log(` Notifying captain: ${captain._id} → socketId: ${captain.socketId}`);
             sendMessageToSocketId(captain.socketId, {
                 event: 'new-ride',
                 data: rideData
@@ -58,7 +58,7 @@ module.exports.createRide = async (req, res) => {
         });
 
     } catch (err) {
-        console.log('❌ CREATE RIDE ERROR:', err.message);
+        console.log(' CREATE RIDE ERROR:', err.message);
         console.log('FULL ERROR:', err);
         return res.status(500).json({ message: err.message });
     }

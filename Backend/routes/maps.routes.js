@@ -4,14 +4,12 @@ const authMiddleware= require('../middlewares/auth.middleware')
 const mapController=require('../controller/maps.controller')
 const {query   } =require('express-validator')
 
-// For frontend compatibility: suggestions endpoint
 router.get('/suggestions', async (req, res, next) => {
   const q = req.query.q;
   if (!q || q.length < 3) return res.json({ suggestions: [] });
   try {
     const mapService = require('../services/maps.service');
     const suggestions = await mapService.getAutoCompleteSuggestions(q);
-    // Return as { suggestions: [...] }
     res.json({ suggestions: suggestions.map(s => s.description || s) });
   } catch (err) {
     res.status(500).json({ suggestions: [] });

@@ -25,7 +25,6 @@ router.post('/confirm',
   rideController.confirmRide
 );
 
-// ✅ FIXED: Added missing startRide and endRide routes
 router.get('/start-ride',
   authMiddleware.authCaptain,
   query('rideId').isMongoId().withMessage('Invalid ride id'),

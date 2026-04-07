@@ -30,7 +30,6 @@ module.exports.registerUser = async (req, res, next) => {
     const token = user.generateAuthToken();
     return res.status(201).json({ token, user, receivedBody: req.body });
   } catch (err) {
-    // Handle duplicate key error from MongoDB (email already exists)
     if (err && err.code === 11000) {
       return res.status(400).json({ errors: { message: 'Email already in use' } });
     }

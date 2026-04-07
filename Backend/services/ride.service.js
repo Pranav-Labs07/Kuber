@@ -12,7 +12,6 @@ async function getFare(pickup, destination) {
   const perKmRate = { auto: 10, car: 15, moto: 8 };
   const perMinRate = { auto: 1, car: 2, moto: 0.5 };
 
-  // ✅ FIXED: Google API returns { value: <number>, text: "..." } — must use .value
   const distanceInKm = distanceTime.distance.value / 1000;
   const durationInMin = distanceTime.duration.value / 60;
 
@@ -52,7 +51,6 @@ module.exports.createRide = async ({ user, pickup, destination, vehicleType }) =
   }
   const fare = await getFare(pickup, destination);
 
-  // ✅ FIXED: added await so ride is actually returned, not a Promise
   const ride = await rideModel.create({
     user,
     pickup,
@@ -69,13 +67,11 @@ module.exports.confirmRide = async ({ rideId, captain }) => {
     throw new Error('Ride id is Required');
   }
 
-  // ✅ FIXED: captain._id (actual value) instead of string 'captain._id'
   await rideModel.findOneAndUpdate(
     { _id: rideId },
     { status: 'accepted', captain: captain._id }
   );
 
-  // ✅ FIXED: use rideId (not undefined 'ride' variable), populate both user and captain
   const ride = await rideModel.findOne({ _id: rideId })
     .populate('user')
     .populate('captain')

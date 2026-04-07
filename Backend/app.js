@@ -19,15 +19,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-/* ---------- API Routes ---------- */
-
 app.use('/users', userRoutes);
 app.use('/captains', captainRoutes);
 app.use('/maps', mapsRoutes);
 app.use('/rides', rideRoutes);
-
-/* ---------- Serve Frontend (React/Vite build) ---------- */
 
 const frontendPath = path.join(__dirname, "../Frontend/dist");
 
