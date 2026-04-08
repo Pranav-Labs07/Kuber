@@ -8,19 +8,19 @@ function initializeSocket(server) {
 
     io = socketIo(server, {
         cors: {
-            // ✅ FIXED: explicitly allow your frontend Railway URL
+
             origin: "*",
             methods: ["GET", "POST"],
             credentials: true
         },
-        // ✅ FIXED: allow both transports so Railway proxy works
+
         transports: ["polling", "websocket"],
-        allowEIO3: true // backwards compatibility
+        allowEIO3: true
     });
 
     io.on("connection", (socket) => {
 
-        console.log("✅ Client connected:", socket.id);
+        console.log("Client connected:", socket.id);
 
         socket.on("join", async (data) => {
 
@@ -29,7 +29,7 @@ function initializeSocket(server) {
             const { userId, userType } = data;
 
             if (!userId || !userType) {
-                console.log("❌ Invalid join payload");
+                console.log(" Invalid join payload");
                 return;
             }
 
@@ -41,7 +41,7 @@ function initializeSocket(server) {
                         socketId: socket.id
                     });
 
-                    console.log("👤 User socket saved:", socket.id);
+                    console.log(" User socket saved:", socket.id);
 
                 } else if (userType === "captain") {
 
@@ -49,19 +49,19 @@ function initializeSocket(server) {
                         socketId: socket.id
                     });
 
-                    console.log("🚕 Captain socket saved:", socket.id);
+                    console.log(" Captain socket saved:", socket.id);
 
                 }
 
             } catch (err) {
-                console.log("❌ Join error:", err.message);
+                console.log(" Join error:", err.message);
             }
 
         });
 
         socket.on("update-location-captain", async (data) => {
 
-            console.log("📍 Location update:", data);
+            console.log(" Location update:", data);
 
             const { userId, location } = data;
 
@@ -79,13 +79,13 @@ function initializeSocket(server) {
                 });
 
             } catch (err) {
-                console.log("❌ Location update error:", err.message);
+                console.log(" Location update error:", err.message);
             }
 
         });
 
         socket.on("disconnect", () => {
-            console.log("❌ Client disconnected:", socket.id);
+            console.log(" Client disconnected:", socket.id);
         });
 
     });
@@ -94,21 +94,21 @@ function initializeSocket(server) {
 
 const sendMessageToSocketId = (socketId, messageObject) => {
 
-    console.log("📤 Sending socket event:", messageObject.event);
-    console.log("🎯 Target socketId:", socketId);
+    console.log(" Sending socket event:", messageObject.event);
+    console.log(" Target socketId:", socketId);
 
     if (!io) {
-        console.log("❌ Socket.io not initialized.");
+        console.log(" Socket.io not initialized.");
         return;
     }
 
     if (!socketId) {
-        console.log("❌ No socketId provided — captain may not have joined yet");
+        console.log(" No socketId provided — captain may not have joined yet");
         return;
     }
 
     io.to(socketId).emit(messageObject.event, messageObject.data);
-    console.log("✅ Event emitted successfully");
+    console.log("Event emitted successfully");
 };
 
 module.exports = { initializeSocket, sendMessageToSocketId };

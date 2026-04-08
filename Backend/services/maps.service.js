@@ -8,7 +8,7 @@ module.exports.getAddressCoordinate = async (address) => {
     try {
         const response = await axios.get(url);
         if (response.data.status === 'OK') {
-            const location = response.data.results[ 0 ].geometry.location;
+            const location = response.data.results[0].geometry.location;
             return {
                 ltd: location.lat,
                 lng: location.lng
@@ -33,10 +33,10 @@ module.exports.getDistanceTime = async (origin, destination) => {
     try {
         const response = await axios.get(url);
         if (response.data.status === 'OK') {
-            if (response.data.rows[ 0 ].elements[ 0 ].status === 'ZERO_RESULTS') {
+            if (response.data.rows[0].elements[0].status === 'ZERO_RESULTS') {
                 throw new Error('No routes found');
             }
-            return response.data.rows[ 0 ].elements[ 0 ];
+            return response.data.rows[0].elements[0];
         } else {
             throw new Error('Unable to fetch distance and time');
         }
@@ -73,7 +73,7 @@ module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
             $nearSphere: {
                 $geometry: {
                     type: 'Point',
-                    coordinates: [ lng, ltd ] 
+                    coordinates: [lng, ltd]
                 },
                 $maxDistance: radius * 1000 // convert km to meters
             }
