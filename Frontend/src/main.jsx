@@ -2,7 +2,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
-axios.defaults.baseURL = "";
+
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 import App from "./App.jsx";
 import SocketProvider from "./context/SocketContext.jsx";
