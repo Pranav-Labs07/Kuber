@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
 
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+axios.defaults.baseURL =
+  import.meta.env.VITE_BASE_URL || "https://kuber-backend-d06w.onrender.com";
 
 import App from "./App.jsx";
 import SocketProvider from "./context/SocketContext.jsx";
@@ -18,7 +19,7 @@ createRoot(document.getElementById("root")).render(
       <CaptainContext>
         <UserContext>
           <BrowserRouter>
-            <App/>
+            <App />
           </BrowserRouter>
         </UserContext>
       </CaptainContext>

@@ -2,7 +2,11 @@ import React, { createContext, useEffect } from "react";
 import { io } from "socket.io-client";
 
 export const SocketContext = createContext();
-const socket = io(import.meta.env.VITE_BASE_URL, {
+
+const BACKEND_URL =
+  import.meta.env.VITE_BASE_URL || "https://kuber-backend-d06w.onrender.com";
+
+const socket = io(BACKEND_URL, {
   transports: ["polling", "websocket"],
   withCredentials: true,
   reconnection: true,
