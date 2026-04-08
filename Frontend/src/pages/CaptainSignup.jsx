@@ -46,7 +46,6 @@ const CaptainSignup = () => {
         setCaptain(data.captain);
         localStorage.setItem("captain-token", data.token);
 
-        // Emit join after signup so socketId is saved immediately
         if (socket && data.captain?._id) {
           const emitJoin = () => {
             socket.emit("join", {
@@ -99,7 +98,6 @@ const CaptainSignup = () => {
       <div>
         <img className="w-20 mb-3" src={Logo} alt="" />
 
-        {/* ✅ Show validation errors */}
         {errors.length > 0 && (
           <div className="mb-4">
             {errors.map((err, i) => (
@@ -128,7 +126,7 @@ const CaptainSignup = () => {
               className="bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base"
               type="text"
               placeholder="Last name"
-              value={lastName} // ✅ FIXED: was 'lastName' (undefined), now correctly bound
+              value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
           </div>

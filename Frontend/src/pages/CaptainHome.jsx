@@ -21,8 +21,6 @@ const CaptainHome = () => {
   const { socket } = useContext(SocketContext);
   const { captain } = useContext(CaptainDataContext);
 
-  // ✅ FIXED: emit join immediately if already connected
-  // socket.on("connect") never fires if socket is already connected when component mounts
   useEffect(() => {
     if (!captain?._id) return;
 
@@ -60,7 +58,6 @@ const CaptainHome = () => {
     };
   }, [captain, socket]);
 
-  // Listen for new ride from user — slides up RidePopUp
   useEffect(() => {
     socket.on("new-ride", (data) => {
       setRide(data);
@@ -72,7 +69,6 @@ const CaptainHome = () => {
     };
   }, [socket]);
 
-  // Captain accepts ride → call backend confirm + notify user via socket
   async function confirmRide() {
     try {
       await axios.post(
@@ -84,7 +80,6 @@ const CaptainHome = () => {
           },
         },
       );
-      // Backend sends 'ride-confirmed' to user via socket (see ride.controller.js)
       setRidePopupPanel(false);
       setConfirmRidePopupPanel(true);
     } catch (err) {
@@ -92,7 +87,6 @@ const CaptainHome = () => {
     }
   }
 
-  // GSAP: RidePopUp slides up from bottom
   useGSAP(() => {
     if (ridePopupPanel) {
       gsap.to(ridePopupPanelRef.current, {
@@ -134,17 +128,14 @@ const CaptainHome = () => {
         </Link>
       </div>
 
-      {/* Map - top 60% */}
       <div className="h-3/5">
         <LiveTracking />
       </div>
 
-      {/* Captain details - bottom 40% — always visible as default UI */}
       <div className="h-2/5 p-6 bg-white">
         <CaptainDetails />
       </div>
 
-      {/* RidePopUp — hidden below screen, slides up when new ride arrives */}
       <div
         ref={ridePopupPanelRef}
         className="fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12 rounded-t-2xl shadow-lg"
@@ -156,8 +147,6 @@ const CaptainHome = () => {
           confirmRide={confirmRide}
         />
       </div>
-
-      {/* ConfirmRidePopUp — hidden below screen, slides up only after Accept */}
       <div
         ref={confirmRidePopupPanelRef}
         className="fixed w-full h-screen z-20 bottom-0 translate-y-full bg-white px-3 py-10 pt-12 rounded-t-2xl shadow-lg"

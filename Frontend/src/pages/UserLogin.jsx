@@ -1,24 +1,24 @@
-import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { UserDataContext } from '../context/UserContext';
-import { useNavigate } from 'react-router-dom';
+import { UserDataContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 import Li from "../assets/userlogo.png";
 
 const UserLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const { setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     const userData = {
       email: email,
-      password: password
+      password: password,
     };
     try {
       const response = await axios.post(`/users/login`, userData);
@@ -26,21 +26,22 @@ const UserLogin = () => {
       if (response.status === 200) {
         const data = response.data;
         setUser(data.user);
-        localStorage.setItem('token', data.token);
-        navigate('/home');
+        localStorage.setItem("token", data.token);
+        navigate("/home");
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       const resp = error.response?.data;
       if (!resp) {
-        setErrorMsg('Network error or server did not respond');
+        setErrorMsg("Network error or server did not respond");
       } else if (resp.message) {
         setErrorMsg(resp.message);
       } else if (resp.errors) {
-        if (Array.isArray(resp.errors)) setErrorMsg(resp.errors.map(e=>e.msg||e.message).join(', '));
+        if (Array.isArray(resp.errors))
+          setErrorMsg(resp.errors.map((e) => e.msg || e.message).join(", "));
         else setErrorMsg(JSON.stringify(resp.errors));
       } else {
-        setErrorMsg('Login failed');
+        setErrorMsg("Login failed");
       }
     }
   };
@@ -48,11 +49,7 @@ const UserLogin = () => {
   return (
     <div className="p-7 flex flex-col justify-between min-h-screen">
       <div>
-        <img
-          className="w-30 mb-6 bg-white"
-          src={Li}
-          alt="Uber Logo"
-        />
+        <img className="w-30 mb-6 bg-white" src={Li} alt="Uber Logo" />
 
         <form onSubmit={submitHandler}>
           <h3 className="text-xl mb-2 text-center">What's your Email</h3>
@@ -76,7 +73,9 @@ const UserLogin = () => {
             minLength="6"
           />
 
-          {errorMsg && <p className="text-red-500 text-center mt-2">{errorMsg}</p>}
+          {errorMsg && (
+            <p className="text-red-500 text-center mt-2">{errorMsg}</p>
+          )}
 
           <button className="bg-[#111] mt-4 text-white font-semibold rounded p-2 w-full text-lg">
             Login
@@ -84,7 +83,7 @@ const UserLogin = () => {
         </form>
 
         <p className="text-center mt-4">
-          New here?{' '}
+          New here?{" "}
           <Link to="/signup" className="text-blue-600 underline">
             Create new Account
           </Link>
@@ -100,6 +99,5 @@ const UserLogin = () => {
     </div>
   );
 };
-
 
 export default UserLogin;

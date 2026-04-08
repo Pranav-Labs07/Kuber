@@ -1,13 +1,13 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 export const CaptainDataContext = createContext();
 
-  const CaptainContext = ({ children }) => {
+const CaptainContext = ({ children }) => {
   const [captain, setCaptain] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const updateCaptain =(captainData) =>{
+  const updateCaptain = (captainData) => {
     setCaptain(captainData);
   };
 
@@ -18,7 +18,7 @@ export const CaptainDataContext = createContext();
     setIsLoading,
     error,
     setError,
-    updateCaptain
+    updateCaptain,
   };
 
   return (
@@ -29,4 +29,3 @@ export const CaptainDataContext = createContext();
 };
 
 export default CaptainContext;
-  

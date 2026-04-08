@@ -33,11 +33,7 @@ const Riding = () => {
       </div>
       <div className="h-1/2 p-4">
         <div className="flex items-center justify-between">
-          <img
-            className="h-12"
-            src={car}
-            alt=""
-          />
+          <img className="h-12" src={car} alt="" />
           <div className="text-right">
             <h2 className="text-lg font-medium capitalize">
               {ride?.captain.fullname.firstname}
@@ -68,7 +64,9 @@ const Riding = () => {
             </div>
           </div>
         </div>
-        <button className="w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg">Make a Payment</button>
+        <button className="w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg">
+          Make a Payment
+        </button>
       </div>
     </div>
   );

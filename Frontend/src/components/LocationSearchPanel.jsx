@@ -1,6 +1,12 @@
 import React from "react";
 
-const LocationSearchPanel = ({ suggestions = [], setPanelOpen, setPickup, setDestination, activeField }) => {
+const LocationSearchPanel = ({
+  suggestions = [],
+  setPanelOpen,
+  setPickup,
+  setDestination,
+  activeField,
+}) => {
   return (
     <div>
       {suggestions.length === 0 && (
@@ -15,7 +21,7 @@ const LocationSearchPanel = ({ suggestions = [], setPanelOpen, setPickup, setDes
             } else {
               setDestination(elem);
             }
-            setPanelOpen(true); 
+            setPanelOpen(true);
           }}
           className="flex gap-4 border-2 p-3 rounded-xl items-center my-2 justify-start cursor-pointer border-gray-300 hover:border-black hover:bg-gray-100"
         >

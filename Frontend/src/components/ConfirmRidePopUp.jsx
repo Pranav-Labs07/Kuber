@@ -18,15 +18,12 @@ const ConfirmRidePopUp = (props) => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.get(
-        `/rides/start-ride`,
-        {
-          params: { rideId: props.ride._id, otp },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("captain-token")}`,
-          },
+      const response = await axios.get(`/rides/start-ride`, {
+        params: { rideId: props.ride._id, otp },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("captain-token")}`,
         },
-      );
+      });
 
       if (response.status === 200) {
         // Backend emits 'ride-started' to user's socketId automatically

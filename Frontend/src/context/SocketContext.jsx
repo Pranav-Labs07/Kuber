@@ -2,11 +2,8 @@ import React, { createContext, useEffect } from "react";
 import { io } from "socket.io-client";
 
 export const SocketContext = createContext();
-
-// ✅ FIXED: Use polling first, then upgrade to websocket
-// Railway's proxy requires this order — websocket-only fails on Railway
-const socket = io("https://kuber.up.railway.app", {
-  transports: ["polling", "websocket"], // polling first, then upgrade
+const socket = io(import.meta.env.VITE_BASE_URL, {
+  transports: ["polling", "websocket"],
   withCredentials: true,
   reconnection: true,
   reconnectionAttempts: 5,
@@ -14,9 +11,7 @@ const socket = io("https://kuber.up.railway.app", {
 });
 
 const SocketProvider = ({ children }) => {
-
   useEffect(() => {
-
     socket.on("connect", () => {
       console.log("Socket connected:", socket.id);
     });
@@ -34,7 +29,6 @@ const SocketProvider = ({ children }) => {
       socket.off("connect_error");
       socket.off("disconnect");
     };
-
   }, []);
 
   return (

@@ -4,7 +4,6 @@ import rd from "../assets/rdm.jpg";
 const RidePopUp = (props) => {
   return (
     <div>
-      {/* Drag handle / close */}
       <h5
         className="p-1 text-center w-[93%] absolute top-0 cursor-pointer"
         onClick={() => props.setRidePopupPanel(false)}
@@ -14,7 +13,6 @@ const RidePopUp = (props) => {
 
       <h3 className="text-2xl font-semibold mb-5">New Ride Available!</h3>
 
-      {/* Rider info */}
       <div className="flex items-center justify-between p-3 bg-yellow-400 rounded-lg mt-4">
         <div className="flex items-center gap-3">
           <img
@@ -30,7 +28,6 @@ const RidePopUp = (props) => {
         <h5 className="text-lg font-semibold">2.2 KM</h5>
       </div>
 
-      {/* Ride details */}
       <div className="w-full mt-5">
         <div className="flex items-center gap-5 p-3 border-b-2">
           <i className="ri-map-pin-user-fill text-lg"></i>
@@ -59,7 +56,6 @@ const RidePopUp = (props) => {
       <div className="mt-5 w-full flex flex-col gap-2">
         <button
           onClick={() => {
-            // Accept: confirm ride with backend, open ConfirmRidePopUp, close this panel
             props.confirmRide();
           }}
           className="bg-green-600 w-full text-white font-semibold p-3 rounded-lg text-lg"
@@ -68,7 +64,6 @@ const RidePopUp = (props) => {
         </button>
         <button
           onClick={() => {
-            // Ignore: just close this panel, do NOT open ConfirmRidePopUp
             props.setRidePopupPanel(false);
           }}
           className="w-full bg-gray-200 text-gray-700 font-semibold p-3 rounded-lg text-lg"

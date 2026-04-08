@@ -9,7 +9,6 @@ const CaptainRiding = () => {
   const [finishRidePanel, setFinishRidePanel] = useState(false);
   const finishRidePanelRef = useRef(null);
 
-  // ✅ FIXED: get ride data from navigation state
   const location = useLocation();
   const ride = location.state?.ride;
 
@@ -23,8 +22,6 @@ const CaptainRiding = () => {
 
   return (
     <div className="h-screen relative">
-
-      {/* Top bar */}
       <div className="fixed p-4 top-0 flex items-center justify-between w-screen z-10">
         <img
           className="w-16"
@@ -39,12 +36,10 @@ const CaptainRiding = () => {
         </Link>
       </div>
 
-      {/* Map */}
       <div className="h-4/5">
         <LiveTracking />
       </div>
 
-      {/* Bottom bar — click to open FinishRide panel */}
       <div
         className="h-1/5 p-6 flex items-center justify-between bg-yellow-400 cursor-pointer"
         onClick={() => setFinishRidePanel(true)}
@@ -58,15 +53,11 @@ const CaptainRiding = () => {
         </button>
       </div>
 
-      {/* FinishRide panel */}
       <div
         ref={finishRidePanelRef}
         className="fixed w-full h-screen z-10 bg-white bottom-0 px-3 py-10 pt-12 translate-y-full"
       >
-        <FinishRide
-          ride={ride}  // ✅ FIXED: was undefined 'rideData', now 'ride' from location state
-          setFinishRidePanel={setFinishRidePanel}
-        />
+        <FinishRide ride={ride} setFinishRidePanel={setFinishRidePanel} />
       </div>
     </div>
   );
