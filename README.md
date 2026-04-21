@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🚗 Kuber - An Uber Clone (Full Stack Application)
 
 ## 📌 Overview
@@ -11,7 +10,7 @@ It supports user authentication, captain (driver) management, and ride fare esti
 
 ## 🌐 Live Project
 
-🔗 **Live App:** https://kuber.up.railway.app
+🔗 **Live App:** https://kuber.vercel.app
 🔗 **Frontend Repo:** https://github.com/Pranav-Labs07/Kuber
 
 ---
