@@ -1,92 +1,122 @@
-# 🚗 Kuber - An Uber Clone (Full Stack Application)
+# Kuber - Full Stack Ride Booking Application
 
-## 📌 Overview
+## Overview
 
-Kuber is a full-stack Uber-like ride booking application built using **Node.js, Express, MongoDB, and modern frontend technologies**.
-
-It supports user authentication, captain (driver) management, and ride fare estimation with a clean UI and secure backend.
+Kuber is a full-stack ride booking application inspired by Uber, built using **Node.js, Express.js, MongoDB, and React.js**. It provides secure user authentication, captain (driver) management, ride booking, fare estimation, and real-time ride management through a modern and responsive interface.
 
 ---
 
-## 🌐 Live Project
+## Live Demo
 
-🔗 **Live App:** https://thekuber.vercel.app
-🔗 **Frontend Repo:** https://github.com/Pranav-Labs07/Kuber
+**Frontend (Vercel)**
+https://thekuber.vercel.app
+
+**Backend API (Render)**
+https://kuber.up.railway.app
+
+**GitHub Repository**
+https://github.com/Pranav-Labs07/Kuber
 
 ---
 
-## ⚙️ Tech Stack
+# Tech Stack
 
-### 🔹 Backend
+## Frontend
+
+* React.js
+* Vite
+* CSS
+* Axios
+* React Router
+
+## Backend
 
 * Node.js
 * Express.js
-* MongoDB (Mongoose)
+* MongoDB
+* Mongoose
 * JWT Authentication
 * Bcrypt
 * Express Validator
-
-### 🔹 Frontend
-
-* React.js (assumed based on structure)
-* Axios / Fetch API
-* Modern UI components
+* CORS
+* Dotenv
 
 ---
 
-## 🚀 Features
+# Features
 
-### 👤 User
+## User
 
-* Register & Login
+* User Registration
+* User Login
 * JWT Authentication
-* View Profile
+* View User Profile
 * Book Rides
+* Logout
 
-### 🚕 Captain (Driver)
+## Captain (Driver)
 
-* Register with vehicle details
-* Accept/Manage rides
+* Captain Registration
+* Login
+* Vehicle Registration
+* Accept Ride Requests
+* Manage Ride Status
 
-### 🚘 Ride System
+## Ride Management
 
 * Fare Estimation
-* Pickup & Destination handling
-* Ride status tracking
+* Pickup and Destination Selection
+* Ride Status Tracking
+* Secure Booking Flow
 
 ---
 
-## 📂 Project Setup
+# Project Structure
 
-### 1️⃣ Clone Repository
-
-```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+```
+Kuber/
+├── frontend/
+├── backend/
+├── README.md
+└── package.json
 ```
 
 ---
 
-## 🔧 Backend Setup
+# Installation
 
-### Install Dependencies
+## Clone the Repository
 
 ```bash
+git clone https://github.com/Pranav-Labs07/Kuber.git
+
+cd Kuber
+```
+
+---
+
+# Backend Setup
+
+Navigate to the backend folder.
+
+```bash
+cd backend
+
 npm install
 ```
 
-### Create `.env` file
+Create a `.env` file.
 
 ```env
 PORT=4000
-DB_CONNECT=your_mongodb_uri
-JWT_SECRET=your_secret_key
+DB_CONNECT=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
 ```
 
-### Run Backend
+Start the backend server.
 
 ```bash
-npx nodemon
+npm run dev
 ```
 
 or
@@ -95,52 +125,100 @@ or
 node server.js
 ```
 
-Backend runs on:
-👉 `http://localhost:4000`
+The backend will run on:
+
+```
+http://localhost:4000
+```
 
 ---
 
-## 🌐 Frontend Setup
+# Frontend Setup
 
-### Clone Frontend Repo
+Navigate to the frontend folder.
 
 ```bash
-git clone https://github.com/Pranav-Labs07/Kuber
-cd Kuber
+cd frontend
+
 npm install
-npm run dev
 ```
 
-### ⚠️ Important
-
-Update frontend API base URL if needed:
+Create a `.env` file.
 
 ```env
 VITE_BASE_URL=http://localhost:4000
 ```
 
----
+Start the development server.
 
-## 🔐 Authentication
+```bash
+npm run dev
+```
 
-* JWT-based authentication
-* Token required for protected routes
-* Sent via:
+The frontend will run on:
 
-  * Authorization header
-  * Cookies
-
----
-
-## 📡 API Endpoints
+```
+http://localhost:5173
+```
 
 ---
 
-### 👤 Users
+# Deployment
 
-#### 🔹 Register
+## Frontend
 
-**POST** `/users/register`
+Platform: **Vercel**
+
+Frontend URL:
+
+```
+https://thekuber.vercel.app
+```
+
+## Backend
+
+Platform: **Render**
+
+Backend API:
+
+```
+https://kuber.up.railway.app
+```
+
+Update the frontend environment variable before deployment.
+
+```env
+VITE_BASE_URL=https://kuber.up.railway.app
+```
+
+---
+
+# Authentication
+
+The application uses JWT-based authentication.
+
+Protected routes require a valid JWT token.
+
+Authentication is handled using:
+
+* Authorization Header
+* HTTP Cookies
+
+---
+
+# API Endpoints
+
+## User Routes
+
+### Register User
+
+**POST**
+
+```
+/users/register
+```
+
+Request Body
 
 ```json
 {
@@ -155,25 +233,41 @@ VITE_BASE_URL=http://localhost:4000
 
 ---
 
-#### 🔹 Profile
+### User Profile
 
-**GET** `/users/profile`
-🔐 Requires Auth
+**GET**
 
----
+```
+/users/profile
+```
 
-#### 🔹 Logout
-
-**GET** `/users/logout`
-🔐 Requires Auth
+Authentication Required
 
 ---
 
-### 🚕 Captains
+### Logout
 
-#### 🔹 Register
+**GET**
 
-**POST** `/captains/register`
+```
+/users/logout
+```
+
+Authentication Required
+
+---
+
+## Captain Routes
+
+### Register Captain
+
+**POST**
+
+```
+/captains/register
+```
+
+Request Body
 
 ```json
 {
@@ -181,7 +275,7 @@ VITE_BASE_URL=http://localhost:4000
     "firstname": "John",
     "lastname": "Driver"
   },
-  "email": "john@example.com",
+  "email": "driver@example.com",
   "password": "password123",
   "vehicle": {
     "color": "Black",
@@ -194,46 +288,73 @@ VITE_BASE_URL=http://localhost:4000
 
 ---
 
-### 🚘 Rides
+## Ride Routes
 
-#### 🔹 Get Fare
+### Get Ride Fare
 
-**GET** `/rides/get-fare`
+**GET**
 
-Query:
+```
+/rides/get-fare
+```
 
-* `pickup`
-* `destination`
+Query Parameters
 
----
-
-## 🔄 Data Flow
-
-1. Validate input
-2. Hash password (bcrypt)
-3. Store in MongoDB
-4. Generate JWT
-5. Send response
+```
+pickup
+destination
+```
 
 ---
 
-## 🔒 Security
+# Application Flow
 
-* Password hashing (bcrypt)
-* JWT authentication
-* Token blacklisting on logout
-
----
-
-## 🧪 Testing (Postman)
-
-* Method: POST
-* URL: `http://localhost:4000/users/register`
-* Header: `Content-Type: application/json`
+1. Validate user input.
+2. Hash passwords using Bcrypt.
+3. Store data in MongoDB.
+4. Generate JWT tokens.
+5. Return authenticated responses.
+6. Manage ride requests and ride status.
 
 ---
 
-## 📦 Dependencies
+# Security
+
+* Password hashing using Bcrypt
+* JWT Authentication
+* Protected API Routes
+* Token Blacklisting on Logout
+* Input Validation using Express Validator
+
+---
+
+# Testing
+
+Example request using Postman.
+
+Method
+
+```
+POST
+```
+
+URL
+
+```
+http://localhost:4000/users/register
+```
+
+Headers
+
+```
+Content-Type: application/json
+```
+
+---
+
+# Dependencies
+
+### Backend
 
 * express
 * mongoose
@@ -243,13 +364,20 @@ Query:
 * cors
 * dotenv
 
+### Frontend
+
+* react
+* react-router-dom
+* axios
+* vite
+
 ---
 
-## 🗄️ Database Models
+# Database Models
 
-### User
+## User
 
-```js
+```javascript
 {
   fullname,
   email,
@@ -258,9 +386,9 @@ Query:
 }
 ```
 
-### Captain
+## Captain
 
-```js
+```javascript
 {
   fullname,
   email,
@@ -270,9 +398,9 @@ Query:
 }
 ```
 
-### Ride
+## Ride
 
-```js
+```javascript
 {
   user,
   captain,
@@ -285,342 +413,57 @@ Query:
 
 ---
 
-## 🧠 How Frontend Connects to Backend
+# Frontend to Backend Communication
 
-Example API call:
+Example API request.
 
-```js
+```javascript
 fetch("http://localhost:4000/users/register", {
   method: "POST",
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json"
+  },
   body: JSON.stringify(data)
 });
 ```
 
 ---
 
-## ⚠️ Important Notes
+# Environment Variables
 
-* Ensure backend is running before frontend
-* Update `.env` variables properly
-* Use correct API base URL in production
-
----
-
-## 👨‍💻 Author
-
-**Pranav Durge**
-=======
-# 🚗 Kuber - An Uber Clone (Full Stack Application)
-
-## 📌 Overview
-
-Kuber is a full-stack Uber-like ride booking application built using **Node.js, Express, MongoDB, and modern frontend technologies**.
-
-It supports user authentication, captain (driver) management, and ride fare estimation with a clean UI and secure backend.
-
----
-
-## 🌐 Live Project
-
-🔗 **Live App:** https://kuber.up.railway.app
-🔗 **Full Project Github Repo:** https://github.com/Pranav-Labs07/Kuber
-
----
-
-## ⚙️ Tech Stack
-
-### 🔹 Backend
-
-* Node.js
-* Express.js
-* MongoDB (Mongoose)
-* JWT Authentication
-* Bcrypt
-* Express Validator
-
-### 🔹 Frontend
-
-* React.js (assumed based on structure)
-* Axios / Fetch API
-* Modern UI components
-
----
-
-## 🚀 Features
-
-### 👤 User
-
-* Register & Login
-* JWT Authentication
-* View Profile
-* Book Rides
-
-### 🚕 Captain (Driver)
-
-* Register with vehicle details
-* Accept/Manage rides
-
-### 🚘 Ride System
-
-* Fare Estimation
-* Pickup & Destination handling
-* Ride status tracking
-
----
-
-## 📂 Project Setup
-
-### 1️⃣ Clone Repository
-
-```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
-```
-
----
-
-## 🔧 Backend Setup
-
-### Install Dependencies
-
-```bash
-npm install
-```
-
-### Create `.env` file
+## Backend
 
 ```env
 PORT=4000
-DB_CONNECT=your_mongodb_uri
+DB_CONNECT=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 ```
 
-### Run Backend
+## Frontend
 
-```bash
-npx nodemon
-```
-
-or
-
-```bash
-node server.js
-```
-
-Backend runs on:
-👉 `http://localhost:4000`
-
----
-
-## 🌐 Frontend Setup
-
-### Clone Frontend Repo
-
-```bash
-git clone https://github.com/Pranav-Labs07/Kuber
-cd Kuber
-npm install
-npm run dev
-```
-
-### ⚠️ Important
-
-Update frontend API base URL if needed:
+Development
 
 ```env
 VITE_BASE_URL=http://localhost:4000
 ```
 
----
+Production
 
-## 🔐 Authentication
-
-* JWT-based authentication
-* Token required for protected routes
-* Sent via:
-
-  * Authorization header
-  * Cookies
-
----
-
-## 📡 API Endpoints
-
----
-
-### 👤 Users
-
-#### 🔹 Register
-
-**POST** `/users/register`
-
-```json
-{
-  "fullname": {
-    "firstname": "John",
-    "lastname": "Doe"
-  },
-  "email": "john@example.com",
-  "password": "password123"
-}
+```env
+VITE_BASE_URL=https://kuber.up.railway.app
 ```
 
 ---
 
-#### 🔹 Profile
+# Notes
 
-**GET** `/users/profile`
-🔐 Requires Auth
-
----
-
-#### 🔹 Logout
-
-**GET** `/users/logout`
-🔐 Requires Auth
+* Ensure MongoDB is running before starting the backend.
+* Configure environment variables correctly.
+* Start the backend before launching the frontend in development.
+* Update the API base URL before deploying the frontend.
 
 ---
 
-### 🚕 Captains
-
-#### 🔹 Register
-
-**POST** `/captains/register`
-
-```json
-{
-  "fullname": {
-    "firstname": "John",
-    "lastname": "Driver"
-  },
-  "email": "john@example.com",
-  "password": "password123",
-  "vehicle": {
-    "color": "Black",
-    "plate": "ABC123",
-    "capacity": 4,
-    "vehicleType": "car"
-  }
-}
-```
-
----
-
-### 🚘 Rides
-
-#### 🔹 Get Fare
-
-**GET** `/rides/get-fare`
-
-Query:
-
-* `pickup`
-* `destination`
-
----
-
-## 🔄 Data Flow
-
-1. Validate input
-2. Hash password (bcrypt)
-3. Store in MongoDB
-4. Generate JWT
-5. Send response
-
----
-
-## 🔒 Security
-
-* Password hashing (bcrypt)
-* JWT authentication
-* Token blacklisting on logout
-
----
-
-## 🧪 Testing (Postman)
-
-* Method: POST
-* URL: `http://localhost:4000/users/register`
-* Header: `Content-Type: application/json`
-
----
-
-## 📦 Dependencies
-
-* express
-* mongoose
-* bcrypt
-* jsonwebtoken
-* express-validator
-* cors
-* dotenv
-
----
-
-## 🗄️ Database Models
-
-### User
-
-```js
-{
-  fullname,
-  email,
-  password,
-  socketId
-}
-```
-
-### Captain
-
-```js
-{
-  fullname,
-  email,
-  password,
-  vehicle,
-  status
-}
-```
-
-### Ride
-
-```js
-{
-  user,
-  captain,
-  pickup,
-  destination,
-  fare,
-  status
-}
-```
-
----
-
-## 🧠 How Frontend Connects to Backend
-
-Example API call:
-
-```js
-fetch("http://localhost:4000/users/register", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(data)
-});
-```
-
----
-
-## ⚠️ Important Notes
-
-* Ensure backend is running before frontend
-* Update `.env` variables properly
-* Use correct API base URL in production
-
----
-
-## 👨‍💻 Author
+# Author
 
 **Pranav Durge**
->>>>>>> aaa90a6a713b255c2129b27cb59bbb0039bcbd7a
